@@ -1,705 +1,622 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Stress Level Check: Gen Z Edition 🧘‍♂️⚡</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Stress Level Check: Gen Z Edition 🧘‍♂️</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <style>
-    * { font-family: 'Space Grotesk', sans-serif; box-sizing: border-box; }
+    * { font-family: 'Poppins', sans-serif; box-sizing: border-box; margin:0; padding:0; }
+    html, body { height:100%; overflow:hidden; background:#faf9ff; }
 
-    /* ── Neo-Brutalism base ── */
-    .nb    { border: 3px solid #111827; box-shadow: 5px 5px 0 #111827; }
-    .nb-sm { border: 2px solid #111827; box-shadow: 3px 3px 0 #111827; }
-    .nb-btn {
-      border: 3px solid #111827; box-shadow: 4px 4px 0 #111827;
-      cursor: pointer; transition: transform .1s ease, box-shadow .1s ease;
+    /* ── Full-viewport screens — no page-level scroll ── */
+    #app { position:relative; width:100vw; height:100vh; overflow:hidden; }
+    .screen {
+      position:absolute; top:0; left:0;
+      width:100%; height:100%;
+      overflow-y:auto; -webkit-overflow-scrolling:touch;
+      display:none; background:#faf9ff;
     }
-    .nb-btn:hover  { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #111827; }
-    .nb-btn:active { transform: translate(2px, 2px);  box-shadow: 2px 2px 0 #111827; }
+    .screen.active { display:block; }
 
-    /* ── Answer option tiles ── */
-    .ans-tile {
-      border: 3px solid #111827; box-shadow: 3px 3px 0 #111827;
-      background: white; cursor: pointer; border-radius: 14px;
-      transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
-      display: flex; flex-direction: column; align-items: center;
-      justify-content: center; padding: 10px 4px; gap: 2px;
-      -webkit-tap-highlight-color: transparent;
+    /* ── Animations ── */
+    @keyframes slideInR  { from{transform:translateX(100%)} to{transform:translateX(0)} }
+    @keyframes slideInQ  { from{transform:translateX(50px);opacity:0} to{transform:translateX(0);opacity:1} }
+    @keyframes fadeUp    { from{transform:translateY(22px);opacity:0} to{transform:translateY(0);opacity:1} }
+    @keyframes bounceIn  { 0%{transform:scale(.35);opacity:0} 65%{transform:scale(1.07)} 100%{transform:scale(1);opacity:1} }
+    @keyframes floatY    { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+    @keyframes popIn     { 0%{transform:scale(0);opacity:0} 75%{transform:scale(1.09)} 100%{transform:scale(1);opacity:1} }
+
+    .anim-bounce { animation:bounceIn .55s cubic-bezier(.175,.885,.32,1.275) both; }
+    .anim-pop    { animation:popIn .5s cubic-bezier(.175,.885,.32,1.275) both; }
+    .anim-float  { animation:floatY 3.5s ease-in-out infinite; }
+    .anim-fadeup { animation:fadeUp .4s ease-out both; }
+    .anim-slideq { animation:slideInQ .3s ease-out both; }
+
+    /* Stagger for advice cards */
+    .s1{animation-delay:.08s} .s2{animation-delay:.18s} .s3{animation-delay:.28s} .s4{animation-delay:.38s}
+
+    /* ── Gradient helpers ── */
+    .grad-bg   { background:linear-gradient(135deg,#7c3aed,#ec4899); }
+    .grad-text {
+      background:linear-gradient(135deg,#7c3aed,#ec4899);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
     }
-    .ans-tile:hover  { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 #111827; }
-    .ans-tile:active { transform: translate(1px, 1px);  box-shadow: 2px 2px 0 #111827; }
-    .ans-tile.picked {
-      background: #c4b5fd; border-color: #6d28d9;
-      box-shadow: 3px 3px 0 #6d28d9; transform: translate(-1px,-1px);
+    .grad-blue-text {
+      background:linear-gradient(135deg,#3b82f6,#7c3aed);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
     }
-    .ans-tile .tile-num  { font-size: 1.6rem; font-weight: 800; color: #111827; line-height: 1; }
-    .ans-tile .tile-emoji{ font-size: 1.3rem; line-height: 1; }
-    .ans-tile .tile-lbl  { font-size: .58rem; font-weight: 700; color: #6b7280; text-align: center; line-height: 1.2; }
 
-    /* ── Screens ── */
-    .screen { display: none; }
-    .screen.active { display: block; }
+    /* ── Cards ── */
+    .card    { background:white; border-radius:20px; box-shadow:0 4px 20px rgba(124,58,237,.09); }
+    .card-sm { background:white; border-radius:14px; box-shadow:0 2px 10px rgba(0,0,0,.06); }
 
-    /* ── Keyframes ── */
-    @keyframes slideR  { from{transform:translateX(40px);opacity:0} to{transform:translateX(0);opacity:1} }
-    @keyframes slideL  { from{transform:translateX(-40px);opacity:0} to{transform:translateX(0);opacity:1} }
-    @keyframes fadeUp  { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
-    @keyframes bounceIn{ 0%{transform:scale(.4)rotate(-6deg);opacity:0} 65%{transform:scale(1.06)} 100%{transform:scale(1);opacity:1} }
-    @keyframes float   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
-    @keyframes popIn   { 0%{transform:scale(0);opacity:0} 80%{transform:scale(1.08)} 100%{transform:scale(1);opacity:1} }
-    @keyframes glitch  { 0%,100%{transform:none} 25%{transform:skewX(2deg)} 75%{transform:skewX(-2deg)} }
+    /* ── Buttons ── */
+    .btn-main {
+      background:linear-gradient(135deg,#7c3aed,#ec4899); color:white;
+      border:none; cursor:pointer; font-family:'Poppins',sans-serif;
+      font-weight:700; border-radius:14px; padding:15px 28px;
+      font-size:1rem; transition:all .2s;
+      box-shadow:0 6px 22px rgba(124,58,237,.38);
+    }
+    .btn-main:hover  { transform:translateY(-2px); box-shadow:0 10px 30px rgba(124,58,237,.48); }
+    .btn-main:active { transform:translateY(0); }
 
-    .anim-slide-r  { animation: slideR .35s ease-out both; }
-    .anim-slide-l  { animation: slideL .35s ease-out both; }
-    .anim-fade-up  { animation: fadeUp .4s ease-out both; }
-    .anim-bounce   { animation: bounceIn .55s cubic-bezier(.175,.885,.32,1.275) both; }
-    .anim-float    { animation: float 3.5s ease-in-out infinite; }
-    .anim-pop      { animation: popIn .5s cubic-bezier(.175,.885,.32,1.275) both; }
-    .anim-glitch   { animation: glitch 3s ease-in-out infinite; }
+    .btn-ghost {
+      background:white; cursor:pointer; font-family:'Poppins',sans-serif;
+      font-weight:700; border-radius:14px; padding:15px 24px;
+      font-size:1rem; transition:all .2s;
+      border:2px solid #7c3aed; color:#7c3aed;
+    }
+    .btn-ghost:hover { background:#f5f3ff; }
+
+    /* ── Answer options ── */
+    .ans-opt {
+      background:white; border:2.5px solid #e5e7eb; border-radius:14px;
+      padding:13px 16px; cursor:pointer; transition:all .15s ease;
+      display:flex; align-items:center; gap:12px; width:100%;
+      box-shadow:0 2px 8px rgba(0,0,0,.04);
+      font-family:'Poppins',sans-serif; text-align:left;
+    }
+    .ans-opt:hover  { border-color:#a78bfa; background:#faf7ff; transform:translateX(4px); }
+    .ans-opt.chosen {
+      border-color:#7c3aed; background:linear-gradient(135deg,#ede9fe,#fce7f3);
+      transform:translateX(6px); box-shadow:0 4px 16px rgba(124,58,237,.18);
+    }
+    .ans-dot {
+      width:30px; height:30px; border-radius:50%;
+      border:2.5px solid #d1d5db; display:flex; align-items:center;
+      justify-content:center; flex-shrink:0;
+      font-weight:700; font-size:.8rem; color:#9ca3af; transition:all .15s;
+    }
+    .ans-opt.chosen .ans-dot {
+      background:linear-gradient(135deg,#7c3aed,#ec4899);
+      border-color:transparent; color:white;
+    }
 
     /* ── Progress bar ── */
-    .prog-fill { transition: width .45s cubic-bezier(.4,0,.2,1); }
+    .prog-fill {
+      background:linear-gradient(90deg,#7c3aed,#ec4899,#3b82f6);
+      transition:width .45s ease; border-radius:999px; height:100%;
+    }
 
     /* ── Score ring ── */
     .score-ring {
-      width: 130px; height: 130px; border-radius: 50%;
-      border: 5px solid #111827; box-shadow: 5px 5px 0 #111827;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center; flex-shrink: 0;
+      width:120px; height:120px; border-radius:50%;
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center; flex-shrink:0;
+    }
+    .ring-low  { background:linear-gradient(135deg,#d1fae5,#a7f3d0); box-shadow:0 6px 20px rgba(16,185,129,.2); }
+    .ring-mid  { background:linear-gradient(135deg,#fef3c7,#fde68a); box-shadow:0 6px 20px rgba(245,158,11,.2); }
+    .ring-high { background:linear-gradient(135deg,#fee2e2,#fecaca); box-shadow:0 6px 20px rgba(239,68,68,.2); }
+
+    /* ── Pill tag ── */
+    .pill { padding:4px 12px; border-radius:999px; font-size:.7rem; font-weight:600; display:inline-flex; align-items:center; gap:4px; }
+
+    /* ── Meme image area ── */
+    .meme-box { border-radius:16px; overflow:hidden; border:2px solid #e5e7eb; box-shadow:0 4px 16px rgba(0,0,0,.08); }
+    .meme-placeholder {
+      background:linear-gradient(135deg,#f5f3ff,#fce7f3);
+      border:2.5px dashed #c4b5fd; border-radius:16px;
+      min-height:220px; display:flex; flex-direction:column;
+      align-items:center; justify-content:center; gap:10px; padding:24px;
     }
 
-    /* ── Meme frame ── */
-    .meme-frame { border: 4px solid #111827; box-shadow: 6px 6px 0 #111827; border-radius: 16px; overflow: hidden; }
-    .meme-bar   { background: #111827; color: white; font-weight: 900; text-align: center; padding: 10px 16px; letter-spacing: .05em; font-size: .85rem; text-transform: uppercase; }
-    .meme-body  { display: flex; align-items: center; justify-content: center; min-height: 180px; padding: 24px; }
+    /* ── Score pointer ── */
+    #score-ptr { transition:left .7s cubic-bezier(.4,0,.2,1); }
 
-    /* ── Score bar pointer ── */
-    #score-pointer { transition: left .7s cubic-bezier(.4,0,.2,1); }
-
-    /* ── Advice item stagger ── */
-    .advice-item { animation: fadeUp .4s ease-out both; }
-    .advice-item:nth-child(1){ animation-delay: .05s }
-    .advice-item:nth-child(2){ animation-delay: .15s }
-    .advice-item:nth-child(3){ animation-delay: .25s }
-    .advice-item:nth-child(4){ animation-delay: .35s }
-
-    /* Scrollbar thin */
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-thumb { background: #6d28d9; border-radius: 2px; }
+    /* ── Scrollbar ── */
+    .screen::-webkit-scrollbar { width:3px; }
+    .screen::-webkit-scrollbar-thumb { background:#c4b5fd; border-radius:2px; }
   </style>
 </head>
-<body class="min-h-screen" style="background:#0f0f1a;">
+<body>
+<div id="app">
 
-<!-- ==================================================================
-     SCREEN 0 · INTRO
-================================================================== -->
-<div id="screen-intro" class="screen active min-h-screen flex flex-col items-center justify-center px-4 py-12">
-  <div class="max-w-md w-full text-center">
+<!-- ================================================================
+     SCREEN · INTRO
+================================================================ -->
+<div id="s-intro" class="screen active">
+  <div class="max-w-md mx-auto px-5 py-10 flex flex-col gap-5">
 
-    <div class="anim-float mb-4 text-7xl select-none">🧘‍♂️</div>
-
-    <div class="nb bg-yellow-300 rounded-2xl px-6 py-5 mb-5">
-      <h1 class="text-3xl font-black text-gray-900 leading-tight">Stress Level Check</h1>
-      <p class="text-purple-700 font-bold text-xl mt-1">Gen Z Edition ⚡</p>
-    </div>
-
-    <div class="nb bg-white rounded-xl p-5 mb-4 text-left">
-      <p class="font-black text-gray-900 mb-3">🔬 Ini bukan quiz astrology biasa.</p>
-      <p class="text-gray-700 text-sm leading-relaxed mb-3">
-        Quiz ini menggunakan <strong>Perceived Stress Scale (PSS-10)</strong> — instrumen psikometri yang dikembangkan oleh <em>Cohen, Kamarck & Mermelstein (1983)</em> dan dipakai secara klinis di seluruh dunia untuk mengukur tingkat stres yang dirasakan.
-      </p>
-      <div class="flex flex-wrap gap-2">
-        <span class="bg-purple-100 text-purple-800 text-xs font-bold px-3 py-1 rounded-full border border-purple-300">⏱️ ~3 menit</span>
-        <span class="bg-green-100 text-green-800 text-xs font-bold px-3 py-1 rounded-full border border-green-300">🔟 10 pertanyaan</span>
-        <span class="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full border border-blue-300">🔒 100% anonim</span>
+    <div class="text-center">
+      <div class="anim-float text-7xl mb-4 select-none">🧘‍♂️</div>
+      <h1 class="font-black leading-tight mb-3" style="font-size:2.4rem;">
+        <span class="grad-text">Stress Level</span><br>
+        <span style="color:#1f2937;">Check</span>
+      </h1>
+      <div class="flex items-center justify-center flex-wrap gap-2">
+        <span class="pill" style="background:#ede9fe;color:#6d28d9;">⚡ Gen Z Edition</span>
+        <span class="pill" style="background:#fce7f3;color:#be185d;">🔬 PSS-10 Validated</span>
       </div>
     </div>
 
-    <div class="bg-gray-800 border-2 border-gray-600 rounded-xl p-4 mb-6 text-left">
-      <p class="text-gray-300 text-xs leading-relaxed">
-        ⚠️ <strong class="text-gray-200">Disclaimer:</strong> Hasil quiz ini bersifat informatif dan bukan pengganti diagnosis dari profesional kesehatan mental. Jika kamu merasa sangat kewalahan, please reach out ke ahlinya.
+    <div class="card p-5">
+      <p class="font-bold text-gray-800 text-sm mb-3">Ini bukan quiz random biasa ✨</p>
+      <p class="text-gray-500 text-sm leading-relaxed mb-4">
+        Quiz ini pakai <strong class="text-gray-800">Perceived Stress Scale (PSS-10)</strong> — alat ukur stres yang sudah divalidasi secara ilmiah oleh Cohen et al. (1983) dan digunakan secara klinis di seluruh dunia.
+      </p>
+      <div class="flex flex-wrap gap-2">
+        <span class="pill" style="background:#f5f3ff;color:#6d28d9;border:1.5px solid #ddd6fe;">⏱️ ~3 menit</span>
+        <span class="pill" style="background:#ecfdf5;color:#065f46;border:1.5px solid #a7f3d0;">🔟 10 pertanyaan</span>
+        <span class="pill" style="background:#eff6ff;color:#1e40af;border:1.5px solid #bfdbfe;">🔒 Anonim</span>
+      </div>
+    </div>
+
+    <div class="card p-5">
+      <p class="font-bold text-gray-800 text-sm mb-3">Cara mainnya:</p>
+      <div class="space-y-3">
+        <div class="flex items-start gap-3">
+          <span class="w-7 h-7 rounded-full grad-bg flex items-center justify-center text-white text-xs font-bold flex-shrink-0">1</span>
+          <p class="text-gray-500 text-sm leading-relaxed">Jawab 10 pertanyaan tentang perasaanmu <strong class="text-gray-700">sebulan terakhir</strong></p>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="w-7 h-7 rounded-full grad-bg flex items-center justify-center text-white text-xs font-bold flex-shrink-0">2</span>
+          <p class="text-gray-500 text-sm leading-relaxed">Pilih dari skala 0–4, dari <em>Gak Pernah</em> sampai <em>Sering Banget</em></p>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="w-7 h-7 rounded-full grad-bg flex items-center justify-center text-white text-xs font-bold flex-shrink-0">3</span>
+          <p class="text-gray-500 text-sm leading-relaxed">Dapat hasil + saran konkret berbasis sains! 🎯</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="rounded-2xl p-4" style="background:#fffbeb;border:1.5px solid #fde68a;">
+      <p class="text-amber-700 text-xs leading-relaxed">
+        ⚠️ <strong>Disclaimer:</strong> Hasil ini bersifat informatif, bukan diagnosis medis atau psikologis. Kalau kamu merasa sangat kewalahan, silakan hubungi profesional kesehatan mental ya 💛
       </p>
     </div>
 
-    <button class="nb-btn bg-purple-500 text-white font-black text-xl px-8 py-4 rounded-xl w-full" onclick="startQuiz()">
-      🚀 Cek Level Stres Gue!
-    </button>
-    <p class="text-gray-500 text-xs mt-4">Jawab sejujurnya. Ini bukan ujian, tidak ada yang menghakimi di sini 🤝</p>
+    <button class="btn-main w-full text-base" onclick="startQuiz()">🚀 Mulai Kuis!</button>
 
+    <p class="text-center text-gray-400 text-xs">Jawab sejujurnya — gak ada yang nilaiin kamu di sini 🤝</p>
   </div>
 </div>
 
-<!-- ==================================================================
-     SCREEN 1 · QUIZ
-================================================================== -->
-<div id="screen-quiz" class="screen min-h-screen px-4 py-6">
-  <div class="max-w-lg mx-auto">
+<!-- ================================================================
+     SCREEN · QUIZ
+================================================================ -->
+<div id="s-quiz" class="screen">
+  <div class="max-w-md mx-auto px-5 py-6">
 
     <!-- Progress -->
-    <div class="mb-6">
-      <div class="flex justify-between items-center mb-2">
-        <span id="q-label" class="text-gray-400 font-bold text-sm">Pertanyaan 1 dari 10</span>
-        <span id="q-pct"   class="text-purple-400 font-black text-sm">0%</span>
-      </div>
-      <div class="bg-gray-800 rounded-full h-3 border-2 border-gray-700 overflow-hidden">
-        <div id="q-prog" class="prog-fill bg-purple-400 h-full rounded-full" style="width:0%"></div>
-      </div>
+    <div class="flex items-center justify-between mb-2">
+      <span id="q-num" class="text-gray-400 font-semibold text-sm">1 / 10</span>
+      <span id="q-pct" class="font-bold text-sm grad-text">0%</span>
+    </div>
+    <div class="bg-gray-100 rounded-full mb-6" style="height:10px;">
+      <div id="q-prog" class="prog-fill" style="width:0%;"></div>
     </div>
 
     <!-- Context pill -->
-    <div class="flex items-center gap-2 mb-3">
-      <span class="bg-gray-800 text-gray-400 text-xs font-bold px-3 py-1 rounded-full border border-gray-700">
-        📅 Sebulan terakhir, seberapa sering...
+    <div class="flex justify-center mb-4">
+      <span class="pill" style="background:#f5f3ff;color:#6d28d9;border:1.5px solid #ddd6fe;font-size:.75rem;">
+        📅 Dalam sebulan terakhir, seberapa sering...
       </span>
     </div>
 
-    <!-- Question card -->
-    <div id="q-card" class="nb bg-white rounded-2xl p-6 mb-6">
+    <!-- Question card (animated on each Q) -->
+    <div id="q-card" class="card p-5 mb-4">
       <div class="flex items-start gap-3">
-        <div id="q-badge" class="flex-shrink-0 w-9 h-9 rounded-full border-3 border-gray-900 flex items-center justify-center font-black text-base bg-purple-300" style="border-width:3px; min-width:36px;"></div>
-        <p id="q-text" class="font-semibold text-gray-900 text-lg leading-relaxed"></p>
+        <span id="q-badge" class="w-8 h-8 rounded-full grad-bg flex items-center justify-center text-white font-bold text-sm flex-shrink-0"></span>
+        <p id="q-text" class="font-semibold text-gray-800 text-base leading-relaxed"></p>
       </div>
     </div>
 
-    <!-- Likert header labels -->
-    <div class="grid grid-cols-5 gap-2 mb-2 px-1">
-      <div class="text-center text-gray-500 text-xs font-bold leading-tight">Gak<br>Pernah</div>
-      <div class="text-center text-gray-500 text-xs font-bold leading-tight">Jarang<br>Banget</div>
-      <div class="text-center text-gray-500 text-xs font-bold leading-tight">Kadang-<br>Kadang</div>
-      <div class="text-center text-gray-500 text-xs font-bold leading-tight">Lumayan<br>Sering</div>
-      <div class="text-center text-gray-500 text-xs font-bold leading-tight">Sering<br>Banget</div>
-    </div>
+    <!-- Options -->
+    <div id="q-opts" class="space-y-2.5 mb-5"></div>
 
-    <!-- Answer tiles (5 options) -->
-    <div id="q-opts" class="grid grid-cols-5 gap-2 mb-6">
-      <!-- Injected by JS -->
-    </div>
-
-    <!-- Next button (appears after selection) -->
-    <button id="btn-next"
-      class="nb-btn bg-green-400 text-gray-900 font-black text-lg px-6 py-3 rounded-xl w-full hidden"
-      onclick="nextQuestion()">
-      Lanjut ➡️
+    <!-- Next -->
+    <button id="btn-next" class="btn-main w-full hidden" onclick="nextQ()">
+      Selanjutnya ➡️
     </button>
 
   </div>
 </div>
 
-<!-- ==================================================================
-     SCREEN 2 · RESULT
-================================================================== -->
-<div id="screen-result" class="screen min-h-screen px-4 py-8">
-  <div class="max-w-xl mx-auto">
+<!-- ================================================================
+     SCREEN · RESULT
+================================================================ -->
+<div id="s-result" class="screen">
+  <div class="max-w-md mx-auto px-5 py-8 space-y-4 pb-12">
 
     <!-- Score card -->
-    <div id="res-card" class="nb rounded-2xl p-6 mb-5 anim-bounce">
-      <p class="text-center text-gray-600 font-bold text-sm mb-4">Skor PSS-10 kamu:</p>
-
-      <div class="flex items-center justify-center gap-5 mb-5">
-        <div id="score-ring" class="score-ring anim-pop">
-          <div id="score-num" class="font-black leading-none" style="font-size:3rem; color:#111827;"></div>
-          <div class="text-xs font-bold text-gray-500">/ 40</div>
+    <div id="res-main" class="card p-5 text-center anim-bounce">
+      <p class="text-gray-400 font-semibold text-xs uppercase tracking-wider mb-4">Hasil PSS-10 kamu 👇</p>
+      <div class="flex items-center justify-center gap-4 mb-5">
+        <div id="res-ring" class="score-ring anim-pop">
+          <div id="res-score" class="font-black leading-none" style="font-size:2.8rem; color:#1f2937;"></div>
+          <div class="text-gray-400 font-medium" style="font-size:.65rem;">dari 40</div>
         </div>
-        <div>
-          <div id="res-emoji" class="text-5xl mb-1"></div>
-          <div id="res-tier"     class="font-black text-gray-900 text-base uppercase tracking-wide"></div>
-          <div id="res-category" class="font-black text-gray-800 text-xl leading-tight mt-0.5"></div>
+        <div class="text-left">
+          <div id="res-emoji" class="text-4xl mb-1"></div>
+          <div id="res-tier" class="font-black text-gray-400 text-xs uppercase tracking-wider"></div>
+          <div id="res-cat"  class="font-black text-gray-900 leading-tight" style="font-size:1rem; max-width:160px;"></div>
         </div>
       </div>
-
-      <!-- Score range bar -->
-      <div class="bg-gray-100 rounded-xl p-3 border-2 border-gray-200">
-        <div class="flex gap-0.5 mb-1 rounded-full overflow-hidden">
-          <div class="flex-1 h-2.5" style="background:#6ee7b7; border-radius:4px 0 0 4px;"></div>
-          <div class="flex-1 h-2.5" style="background:#fde68a;"></div>
-          <div class="flex-1 h-2.5" style="background:#fca5a5; border-radius:0 4px 4px 0;"></div>
+      <!-- Score bar -->
+      <div class="rounded-xl p-3" style="background:#f8f7ff;">
+        <div class="flex rounded-full overflow-hidden mb-2" style="height:8px;">
+          <div class="flex-1" style="background:#6ee7b7;"></div>
+          <div class="flex-1" style="background:#fde68a;"></div>
+          <div class="flex-1" style="background:#fca5a5;"></div>
         </div>
-        <div class="relative h-3">
-          <div id="score-pointer"
-            class="absolute top-0 w-3 h-3 rounded-full border-2 border-gray-900"
-            style="left:0%; margin-left:-6px; background:#111827;">
+        <div class="relative" style="height:14px;">
+          <div id="score-ptr" class="absolute rounded-full border-2 border-white"
+            style="width:14px;height:14px;background:#7c3aed;top:0;left:0;margin-left:-7px;box-shadow:0 2px 6px rgba(124,58,237,.4);">
           </div>
         </div>
-        <div class="flex justify-between text-xs text-gray-500 font-semibold mt-0.5">
-          <span>0 ✨</span><span>14 ⚠️</span><span>27 🚨</span><span>40</span>
+        <div class="flex justify-between text-gray-400 font-semibold" style="font-size:.65rem;">
+          <span>0 ✨ Chill</span><span>14 ⚠️ Yellow</span><span>27 🚨 Overload</span><span>40</span>
         </div>
       </div>
     </div>
 
-    <!-- Meme card -->
-    <div class="meme-frame mb-5 anim-fade-up" style="animation-delay:.1s">
-      <div id="meme-top"    class="meme-bar"></div>
-      <div id="meme-body"   class="meme-body"></div>
-      <div id="meme-bottom" class="meme-bar"></div>
+    <!-- Meme -->
+    <div class="anim-fadeup" style="animation-delay:.12s;">
+      <p class="font-bold text-gray-400 text-xs uppercase tracking-wider mb-2 ml-1">🎭 Meme Level Kamu</p>
+      <!-- Real meme image (shown when URL is set in MEME_IMAGES) -->
+      <div id="meme-real" class="meme-box hidden">
+        <img id="meme-img" src="" alt="Meme" class="w-full object-cover" style="max-height:280px;"/>
+      </div>
+      <!-- Placeholder (shown when no image URL) -->
+      <div id="meme-ph" class="meme-placeholder">
+        <div id="ph-emoji" class="text-6xl text-center"></div>
+        <div class="text-center">
+          <div id="ph-top" class="font-black text-gray-700 text-sm uppercase tracking-wide"></div>
+          <div id="ph-bot" class="font-medium text-gray-400 text-xs mt-1 italic"></div>
+        </div>
+        <div class="pill" style="background:white;color:#7c3aed;border:1.5px solid #c4b5fd;margin-top:4px;font-size:.65rem;">
+          📸 Foto meme akan tampil di sini
+        </div>
+      </div>
     </div>
 
     <!-- Description -->
-    <div class="nb bg-white rounded-xl p-5 mb-5 anim-fade-up" style="animation-delay:.2s">
-      <p class="font-black text-gray-900 mb-2">📢 Situasi kamu saat ini:</p>
-      <p id="res-desc" class="text-gray-700 text-sm leading-relaxed"></p>
+    <div class="card p-5 anim-fadeup" style="animation-delay:.22s;">
+      <p class="font-bold text-gray-800 text-sm mb-2">📢 Kondisi kamu:</p>
+      <p id="res-desc" class="text-gray-500 text-sm leading-relaxed"></p>
     </div>
 
     <!-- Advice -->
-    <div id="advice-wrap" class="nb rounded-xl p-5 mb-5 anim-fade-up" style="animation-delay:.3s">
-      <p class="font-black text-gray-900 mb-4">💊 Resep Anti-Stres berbasis sains:</p>
+    <div id="advice-wrap" class="card p-5 anim-fadeup" style="animation-delay:.32s;">
+      <p class="font-bold text-gray-800 text-sm mb-4">💊 Resep Anti-Stres (berbasis sains):</p>
       <div id="advice-list" class="space-y-3"></div>
     </div>
 
-    <!-- Attribution -->
-    <div class="bg-gray-800 border-2 border-gray-700 rounded-xl p-4 mb-5 text-center">
-      <p class="text-gray-400 text-xs leading-relaxed">
-        📊 Berdasarkan <strong class="text-gray-300">Perceived Stress Scale (PSS-10)</strong><br>
-        Cohen, S., Kamarck, T., &amp; Mermelstein, R. (1983) · Sumber resmi:
-        <span class="text-purple-400">NH Dept. of Administrative Services</span>
+    <!-- Source -->
+    <div class="rounded-2xl p-4 text-center" style="background:#f5f3ff;border:1.5px solid #ddd6fe;">
+      <p class="text-purple-500 text-xs leading-relaxed">
+        📊 <strong>Perceived Stress Scale (PSS-10)</strong><br>
+        Cohen, S., Kamarck, T., &amp; Mermelstein, R. (1983)<br>
+        <span style="color:#a78bfa;">NH Dept. of Administrative Services</span>
       </p>
     </div>
 
-    <!-- Action buttons -->
+    <!-- Buttons -->
     <div class="flex gap-3">
-      <button class="nb-btn bg-purple-500 text-white font-black px-5 py-4 rounded-xl flex-1" onclick="retakeQuiz()">
-        🔄 Ulangi Quiz
-      </button>
-      <button class="nb-btn bg-green-400 text-gray-900 font-black px-5 py-4 rounded-xl flex-1" onclick="copyResult()">
-        📋 Copy Hasil
-      </button>
+      <button class="btn-ghost flex-1" onclick="retake()">🔄 Ulangi</button>
+      <button class="btn-main  flex-1" onclick="copyRes()">📋 Share</button>
     </div>
 
   </div>
 </div>
 
-<!-- ==================================================================
-     JAVASCRIPT
-================================================================== -->
+</div><!-- #app -->
 <script>
+/* ================================================================
+   MEME IMAGES
+   Butuh 3 foto meme — isi URL-nya di sini:
+   • low      → meme chill / santai
+   • moderate → meme tired / "this is fine"
+   • high     → meme overwhelmed / chaos
 
-/* ──────────────────────────────────────────────────────────────────
-   PSS-10 QUESTIONS — Gen Z adapted
-   Source: Cohen, S. et al. (1983) / NH DAS Wellness
-   Reverse-scored items: PSS-10 item numbers 4, 5, 7, 8
-   In 0-indexed JS array: indices 3, 4, 6, 7
-   Reverse formula: score = 4 - rawAnswer
-
-   📝 TO ADD A QUESTION: copy an object below and keep the same
-      structure. Set reverse:true only for PSS-10 items 4,5,7,8.
-────────────────────────────────────────────────────────────────── */
-const QUESTIONS = [
-  {
-    // PSS-10 item 1 (regular)
-    text: '...kamu nge-freak out gara-gara sesuatu yang tiba-tiba terjadi dan bikin hari kamu jadi chaos tanpa peringatan?',
-    reverse: false,
-  },
-  {
-    // PSS-10 item 2 (regular)
-    text: '...kamu ngerasa gak bisa kontrol hal-hal penting dalam hidupmu sendiri?',
-    reverse: false,
-  },
-  {
-    // PSS-10 item 3 (regular)
-    text: '...kamu ngerasa nervous, gelisah, atau overthinking mode ON sampai susah fokus sama hal lain?',
-    reverse: false,
-  },
-  {
-    // PSS-10 item 4 — ⚠️ REVERSE SCORED
-    text: '...kamu ngerasa cukup yakin dan capable buat handle semua drama dan masalah pribadi yang datang?',
-    reverse: true,
-  },
-  {
-    // PSS-10 item 5 — ⚠️ REVERSE SCORED
-    text: '...hidup kamu ngerasa on-track dan berjalan sesuai rencana — literally "everything falls into place" energy?',
-    reverse: true,
-  },
-  {
-    // PSS-10 item 6 (regular)
-    text: '...kamu ngerasa overwhelmed dan gak sanggup ngerjain semua yang ada di to-do list kamu?',
-    reverse: false,
-  },
-  {
-    // PSS-10 item 7 — ⚠️ REVERSE SCORED
-    text: '...kamu berhasil stay calm dan gak gampang tersulut emosi dari hal-hal yang biasanya bikin kamu kesel?',
-    reverse: true,
-  },
-  {
-    // PSS-10 item 8 — ⚠️ REVERSE SCORED
-    text: '...kamu ngerasa in-control, on top of things, dan basically punya "I got this" vibes sepanjang hari?',
-    reverse: true,
-  },
-  {
-    // PSS-10 item 9 (regular)
-    text: '...kamu emosi atau kesal gara-gara sesuatu yang ada di luar kendali kamu sama sekali?',
-    reverse: false,
-  },
-  {
-    // PSS-10 item 10 (regular)
-    text: '...kamu ngerasa masalah dan tekanan menumpuk begitu tinggi sampai rasanya udah mau nyerah aja?',
-    reverse: false,
-  },
-];
-
-/* Likert options (0–4) */
-const LIKERT = [
-  { val: 0, emoji: '😌', label: 'Gak\nPernah' },
-  { val: 1, emoji: '🙂', label: 'Jarang\nBanget' },
-  { val: 2, emoji: '😐', label: 'Kadang\nKadang' },
-  { val: 3, emoji: '😟', label: 'Lumayan\nSering' },
-  { val: 4, emoji: '😰', label: 'Sering\nBanget' },
-];
-
-/* ──────────────────────────────────────────────────────────────────
-   RESULT TIERS
-   PSS-10 interpretive ranges (Cohen, 1983):
-   Low: 0–13 · Moderate: 14–26 · High: 27–40
-────────────────────────────────────────────────────────────────── */
-const TIERS = [
-  {
-    min: 0, max: 13,
-    tier:     'LOW STRESS',
-    category: 'Vibe Check: PASSED ✨',
-    emoji:    '😎',
-    ringBg:   '#6ee7b7',
-    cardBg:   '#ecfdf5',
-    adviceBg: '#f0fdf4',
-
-    memeTop:    'POV: YOU ACTUALLY HAVE YOUR LIFE TOGETHER',
-    memeBody: `
-      <div style="text-align:center; line-height:1.3;">
-        <div style="font-size:4.5rem;">😎</div>
-        <div style="font-size:1.5rem; margin:8px 0;">🎵 🧘‍♂️ 🎵</div>
-        <div style="font-size:.85rem; font-weight:800; color:#065f46; letter-spacing:.05em;">
-          *lo-fi beats to chill/study to plays*
-        </div>
-      </div>`,
-    memeBottom: '"STRESS? I DON\'T KNOW HER." — YOU, APPARENTLY',
-
-    desc: 'Bro/sis, kamu basically adalah definisi <strong>chill yang sesungguhnya</strong>. Skor PSS-10 kamu menunjukkan bahwa stres yang kamu rasakan tergolong rendah dan kamu cukup baik dalam mengelola tekanan hidup sehari-hari.\n\nIni bukan berarti hidupmu tanpa masalah. Kamu punya resiliensi mental yang solid. Orang-orang sekitar mungkin iri sama aura tenang kamu. Pertahankan ini — dan ingat bahwa maintaining mental health itu butuh effort, sama kayak fitness fisik. ✨',
-
-    advice: [
-      {
-        icon: '📓',
-        title: 'Gratitude Journaling (3 menit/malam)',
-        body: 'Tulis 3 hal yang kamu syukuri setiap malam — <em>spesifik</em>, bukan "hari ini baik-baik aja". Riset dari UC Davis menunjukkan praktek ini memperkuat <strong>koneksi saraf positif</strong> di otak dan meningkatkan well-being jangka panjang.',
-      },
-      {
-        icon: '🏃',
-        title: 'Maintain Rutinitas yang Udah Jalan',
-        body: 'Stres rendahmu sebagian besar karena rutinitas yang sudah terbentuk. Jangan sampai "satu hari libur" berubah jadi "sebulan chaos". Consistency > intensity.',
-      },
-      {
-        icon: '🤝',
-        title: 'Jadi Support System dengan Batas Sehat',
-        body: 'Dengan mental kuat, kamu punya kapasitas untuk mendukung orang lain. Tapi tetap set <strong>boundaries yang jelas</strong>. Being a support system ≠ menyerap semua masalah orang.',
-      },
-      {
-        icon: '🌱',
-        title: 'Explore Challenge Baru',
-        body: 'Kamu punya bandwidth mental yang cukup untuk tumbuh. Coba skill baru, hobi baru, atau challenge yang selama ini ada di bucket list kamu. Mental health bukan cuma "tidak sakit" — tapi juga "berkembang".',
-      },
-    ],
-  },
-
-  {
-    min: 14, max: 26,
-    tier:     'MODERATE STRESS',
-    category: 'Yellow Flag Alert ⚠️',
-    emoji:    '😮‍💨',
-    ringBg:   '#fde68a',
-    cardBg:   '#fffbeb',
-    adviceBg: '#fefce8',
-
-    memeTop: 'CURRENT MENTAL STATE:',
-    memeBody: `
-      <div style="text-align:center; line-height:1.35;">
-        <div style="font-size:4rem;">🔥🐶🔥</div>
-        <div style="font-size:1.3rem; font-weight:900; color:#92400e; margin:6px 0;">"This is fine."</div>
-        <div style="font-size:.8rem; font-weight:700; color:#b45309; font-style:italic;">
-          *everything around is on fire*<br>*continues to sip coffee*
-        </div>
-      </div>`,
-    memeBottom: '"I\'M FINE." (NARRATOR: THEY WERE NOT FINE)',
-
-    desc: 'Kamu masih functioning — masih bisa scroll, masih bisa ketawa di grup chat, masih ngerjain kerjaan. Tapi ada <strong>yellow flag yang perlu diperhatiin serius</strong>.\n\nSkor PSS-10 kamu menunjukkan stres level sedang. Ini artinya kamu mungkin mulai ngerasain: mood yang gampang naik-turun, motivasi yang fluktuatif, atau "I\'m fine" yang udah jadi jawaban autopilot padahal sebenernya kamu agak kewalahan. Ini waktunya self-care yang <em>intentional</em>, bukan reaktif setelah udah burnout.',
-
-    advice: [
-      {
-        icon: '🌬️',
-        title: 'Physiological Sigh — Teknik Breathing dari Stanford',
-        body: '<strong>Cara:</strong> Tarik napas panjang lewat hidung → langsung tarik lagi napas pendek lewat hidung (double inhale) → hembuskan PERLAHAN lewat mulut. Ulangi 3–5x.\n\n<strong>Kenapa works:</strong> Double inhale mengisi penuh alveoli paru-paru yang kolaps, memaksimalkan transfer O₂, dan langsung mengaktifkan sistem parasimpatis (mode tenang). Lebih efektif dari deep breathing biasa.',
-      },
-      {
-        icon: '⏸️',
-        title: 'Micro-break 2 Menit per 90 Menit',
-        body: 'Otak manusia memiliki siklus ultradian ~90 menit. Setelah itu, performa turun. Ambil 2 menit penuh untuk berdiri, lihat ke jarak jauh (minimum 20 kaki/6 meter), atau sekadar bengong. Ini bukan malas — ini maintenance sistem saraf kamu.',
-      },
-      {
-        icon: '📝',
-        title: 'Brain Dump Journaling',
-        body: 'Ambil kertas kosong dan tulis SEMUA yang ada di kepala kamu tanpa filter selama 5 menit. Gak perlu rapi, gak perlu struktur. Setelah selesai, otak terasa lebih ringan. Ini secara literal memindahkan "working memory load" dari otak ke kertas — seperti clear cache.',
-      },
-      {
-        icon: '📵',
-        title: 'Digital Detox 1 Jam Sebelum Tidur',
-        body: 'Blue light dari layar + doom-scrolling → cortisol naik menjelang tidur → kualitas tidur jelek → stres makin tinggi keesokan paginya. Jauhkan HP dari tempat tidur. Buku, journaling, atau stretching ringan adalah alternatif yang jauh lebih baik buat otak.',
-      },
-    ],
-  },
-
-  {
-    min: 27, max: 40,
-    tier:     'HIGH STRESS',
-    category: 'System Overload 🚨',
-    emoji:    '😭',
-    ringBg:   '#fca5a5',
-    cardBg:   '#fff1f2',
-    adviceBg: '#fef2f2',
-
-    memeTop: 'BRAIN.EXE HAS STOPPED WORKING',
-    memeBody: `
-      <div style="text-align:center; line-height:1.35;">
-        <div style="font-size:3.5rem;">💀😭💀</div>
-        <div style="font-size:.9rem; font-weight:900; color:#991b1b; margin:8px 0; letter-spacing:.02em; font-family:monospace;">
-          ERROR 0x000006A4<br>
-          404: ENERGY NOT FOUND<br>
-          MENTAL_STACK_OVERFLOW
-        </div>
-        <div style="font-size:1.2rem;">⚠️🔴⚠️</div>
-      </div>`,
-    memeBottom: 'PLEASE PRESS CTRL+ALT+DEL ON YOUR LIFE ASAP',
-
-    desc: 'Okay, kita perlu ngobrol serius — tapi dengan penuh kasih sayang ya. 💙\n\nSkor PSS-10 kamu menunjukkan tingkat stres yang <strong>tinggi</strong>. Ini bukan drama, ini valid dan ini nyata. Kamu mungkin udah lama ngerasain salah satu atau beberapa dari ini: susah tidur atau tidur terus, gampang marah sama hal-hal kecil, ngerasa kosong atau disconnected, susah konsentrasi, atau ngerasa gak ada energi untuk hal-hal yang dulu kamu sukai.\n\n<strong>Ini bukan tanda kelemahan.</strong> Ini tanda bahwa kamu udah terlalu lama kerja keras tanpa cukup recovery — seperti HP yang charger-nya rusak dan terus dipaksa hidup. Sekarang adalah waktunya prioritaskan dirimu sendiri.',
-
-    advice: [
-      {
-        icon: '🛑',
-        title: 'BERHENTI & BREATHE — Lakukan Ini Sekarang Juga',
-        body: 'Sebelum lanjut baca, lakukan Physiological Sigh 3x sekarang: Tarik napas dalam lewat hidung → tarik lagi napas pendek → hembuskan PERLAHAN lewat mulut. Ini bukan opsional. Lakukan sekarang.\n\nCortisol turun dalam hitungan menit dengan teknik ini (penelitian: Balban et al., Stanford 2023).',
-      },
-      {
-        icon: '💬',
-        title: 'Reach Out — Jangan Sendirian Hari Ini',
-        body: 'Hubungi 1 orang yang kamu percaya hari ini. Literally hari ini, bukan "nanti". Gak harus cerita panjang — cukup bilang "eh bisa ngobrol bentar gak?"\n\nManusia adalah makhluk sosial yang membutuhkan koneksi untuk regulasi emosi. Menyendiri saat stres tinggi bukan stoik — itu justru memperpanjang penderitaan.',
-      },
-      {
-        icon: '🧩',
-        title: 'Break Down — Satu Hal Terkecil Dulu',
-        body: 'Jangan coba selesaikan semuanya sekaligus. Itu imposibel dan justru bikin makin overwhelmed. Pilih <em>satu</em> hal terkecil yang bisa kamu tangani hari ini. Selesaikan itu saja. Otak yang kelelahan butuh "quick win" untuk restart sistem reward-nya.',
-      },
-      {
-        icon: '🆘',
-        title: 'Pertimbangkan Bantuan Profesional — Ini Bukan Tanda Lemah',
-        body: 'Ngobrol sama psikolog itu seperti ke dokter saat demam tinggi — wajar dan perlu. Ini tanda bahwa kamu <em>cerdas dan self-aware</em>.\n\n<strong>Akses bantuan:</strong> Into The Light Indonesia: <strong>119 ext 8</strong> | Psikolog via Halodoc, SehatQ, atau Into The Light.\n\nKamu layak mendapat dukungan lebih dari yang selama ini kamu berikan ke dirimu sendiri.',
-      },
-    ],
-  },
-];
-
-/* ──────────────────────────────────────────────────────────────────
-   PSS-10 SCORING
-   Reverse-scored item indices (0-based): 3, 4, 6, 7
-   (PSS-10 item numbers 4, 5, 7, 8 in 1-based numbering)
-   Formula: reverse_score = 4 - raw_answer
-────────────────────────────────────────────────────────────────── */
-const REVERSE_IDX = new Set([3, 4, 6, 7]);
-
-function calcScore(answers) {
-  // Validate: must have exactly 10 answers
-  if (answers.length !== 10) return null;
-  return answers.reduce((sum, raw, idx) => {
-    const scored = REVERSE_IDX.has(idx) ? (4 - raw) : raw;
-    return sum + scored;
-  }, 0);
-}
-
-function getTier(score) {
-  return TIERS.find(t => score >= t.min && score <= t.max) || TIERS[0];
-}
-
-/* ──────────────────────────────────────────────────────────────────
-   GAME STATE
-────────────────────────────────────────────────────────────────── */
-let state = {
-  current: 0,
-  answers: [],
-  selected: null,
+   Contoh: low: './img/meme-chill.jpg'
+           low: 'https://i.imgur.com/xxxx.jpg'
+================================================================ */
+const MEME_IMAGES = {
+  low:      '',   // ← ganti dengan URL foto meme
+  moderate: '',   // ← ganti dengan URL foto meme
+  high:     '',   // ← ganti dengan URL foto meme
 };
 
-/* ──────────────────────────────────────────────────────────────────
-   SCREEN NAVIGATION
-────────────────────────────────────────────────────────────────── */
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+/* ================================================================
+   PSS-10 QUESTIONS — Gen Z Indonesian
+   Sumber: Cohen et al. (1983), adaptasi bahasa Indonesia
+
+   Reverse-scored items (PSS-10 numbering): 4, 5, 7, 8
+   Dalam array (0-indexed): indeks 3, 4, 6, 7
+   Rumus reverse: skor = 4 − jawaban_mentah
+
+   📝 Tambah soal baru: copy satu objek, ikuti format yang sama.
+================================================================ */
+const QUESTIONS = [
+  {
+    // PSS-10 Item 1 — regular
+    text: 'kamu merasa kesal atau kecewa karena ada sesuatu yang terjadi di luar dugaan?',
+    reverse: false,
+  },
+  {
+    // PSS-10 Item 2 — regular
+    text: 'kamu merasa tidak mampu mengendalikan hal-hal penting dalam hidupmu?',
+    reverse: false,
+  },
+  {
+    // PSS-10 Item 3 — regular
+    text: 'kamu merasa gugup, gelisah, atau stres?',
+    reverse: false,
+  },
+  {
+    // PSS-10 Item 4 — ⚠️ REVERSE SCORED
+    text: 'kamu merasa yakin dan percaya diri bisa menghadapi masalah-masalah pribadimu?',
+    reverse: true,
+  },
+  {
+    // PSS-10 Item 5 — ⚠️ REVERSE SCORED
+    text: 'kamu merasa segala sesuatu berjalan sesuai harapan?',
+    reverse: true,
+  },
+  {
+    // PSS-10 Item 6 — regular
+    text: 'kamu merasa tidak sanggup menyelesaikan semua hal yang harus kamu lakukan?',
+    reverse: false,
+  },
+  {
+    // PSS-10 Item 7 — ⚠️ REVERSE SCORED
+    text: 'kamu mampu mengendalikan emosi dan tetap tenang saat menghadapi hal-hal yang mengganggu?',
+    reverse: true,
+  },
+  {
+    // PSS-10 Item 8 — ⚠️ REVERSE SCORED
+    text: 'kamu merasa bisa menguasai keadaan di sekitarmu?',
+    reverse: true,
+  },
+  {
+    // PSS-10 Item 9 — regular
+    text: 'kamu merasa marah atau kesal karena sesuatu yang terjadi di luar kendalimu?',
+    reverse: false,
+  },
+  {
+    // PSS-10 Item 10 — regular
+    text: 'kamu merasa kesulitan-kesulitan yang ada sudah menumpuk terlalu banyak hingga terasa tidak bisa diatasi?',
+    reverse: false,
+  },
+];
+
+/* Likert options */
+const LIKERT = [
+  { val:0, emoji:'😌', label:'Gak Pernah' },
+  { val:1, emoji:'🙂', label:'Jarang Banget' },
+  { val:2, emoji:'😐', label:'Kadang-Kadang' },
+  { val:3, emoji:'😟', label:'Lumayan Sering' },
+  { val:4, emoji:'😰', label:'Sering Banget' },
+];
+
+/* ================================================================
+   RESULT TIERS
+   PSS-10 ranges: Low 0–13 · Moderate 14–26 · High 27–40
+================================================================ */
+const TIERS = [
+  {
+    key:'low', min:0, max:13,
+    tier:'LOW STRESS', cat:'Vibe Check: PASSED ✨',
+    emoji:'😎', ring:'ring-low',
+    phEmoji:'😎🎵🧘‍♂️',
+    phTop:'POV: YOU ACTUALLY HAVE YOUR LIFE TOGETHER',
+    phBot:'"Stress? I don\'t know her." — kamu, ternyata',
+    desc:'Selamat! Skor PSS-10 kamu menunjukkan tingkat stres yang rendah 🎉\n\nIni bukan berarti hidupmu tanpa masalah — tapi kamu cukup mampu mengelola tekanan sehari-hari dengan baik. Kamu punya resiliensi yang solid. Terus jaga keseimbangan yang sudah kamu bangun ya!',
+    advice:[
+      { icon:'📓', title:'Gratitude Journaling',           body:'Tulis 3 hal yang kamu syukuri setiap malam, se-spesifik mungkin. Kebiasaan ini memperkuat pola pikir positif dan terbukti secara neurosains meningkatkan well-being jangka panjang.' },
+      { icon:'🏃', title:'Jaga Rutinitas Positifmu',       body:'Level stresmu rendah sebagian besar karena rutinitas baik yang sudah terbentuk. Jangan biarkan "satu hari pengecualian" jadi kebiasaan baru yang merusak pola tersebut.' },
+      { icon:'🤝', title:'Jadilah Support System yang Sehat', body:'Dengan kondisi mental yang baik, kamu punya kapasitas untuk mendukung orang lain. Tapi tetap perhatikan batasanmu — jadilah sandaran tanpa menguras dirimu sendiri.' },
+      { icon:'🌱', title:'Eksplorasi Hal Baru',             body:'Kamu punya cukup bandwidth mental untuk berkembang. Coba pelajari skill baru atau tekuni hobi yang sudah lama ada di bucket list kamu!' },
+    ],
+  },
+  {
+    key:'moderate', min:14, max:26,
+    tier:'MODERATE STRESS', cat:'Yellow Flag ⚠️',
+    emoji:'😮‍💨', ring:'ring-mid',
+    phEmoji:'🔥🐶🔥',
+    phTop:'"THIS IS FINE."',
+    phBot:'(padahal semuanya lagi terbakar di sekitar kamu)',
+    desc:'Kamu masih bisa berfungsi — masih bisa kerja dan ketawa. Tapi ada tanda-tanda yang perlu diperhatikan ⚠️\n\nSkor PSS-10-mu menunjukkan stres tingkat sedang. Mungkin kamu mulai ngerasain mood yang gampang naik-turun, atau "aku baik-baik aja" yang udah jadi jawaban otomatis padahal sebenernya belum tentu.\n\nIni waktunya self-care yang lebih terencana — jangan nunggu burnout dulu!',
+    advice:[
+      { icon:'🌬️', title:'Physiological Sigh (dari Stanford)', body:'Tarik napas dalam lewat hidung → tarik lagi napas pendek lewat hidung (double inhale) → hembuskan perlahan lewat mulut. Ulangi 3–5x. Terbukti langsung menurunkan kadar kortisol dalam hitungan menit!' },
+      { icon:'⏸️', title:'Micro-break Setiap 90 Menit',       body:'Otak punya siklus kerja ~90 menit. Setelahnya, ambil istirahat 2 menit: berdiri, lihat ke jarak jauh, atau sekadar diam. Ini bukan malas — ini maintenance sistem saraf yang wajib.' },
+      { icon:'📝', title:'Brain Dump',                         body:'Tulis SEMUA yang ada di pikiranmu ke kertas selama 5 menit tanpa filter. Tidak perlu rapi. Ini seperti "clear cache" untuk otak yang penuh.' },
+      { icon:'📵', title:'Digital Detox Sebelum Tidur',        body:'Jauhkan HP minimal 1 jam sebelum tidur. Layar + doom-scrolling → kortisol naik → tidur buruk → stres makin tinggi esok harinya. Break the cycle!' },
+    ],
+  },
+  {
+    key:'high', min:27, max:40,
+    tier:'HIGH STRESS', cat:'System Overload 🚨',
+    emoji:'😭', ring:'ring-high',
+    phEmoji:'💀😭💀',
+    phTop:'BRAIN.EXE HAS STOPPED WORKING',
+    phBot:'404: Energy Not Found · Please restart your life',
+    desc:'Kita perlu ngobrol serius — tapi dengan penuh kasih sayang ya 💙\n\nSkor PSS-10-mu menunjukkan tingkat stres yang tinggi. Kamu mungkin udah lama ngerasain: susah tidur, mudah marah, sulit konsentrasi, atau lelah terus tanpa alasan jelas.\n\nIni bukan tanda kelemahan. Ini tanda kamu sudah terlalu lama kerja keras tanpa cukup recovery. Sekarang waktunya prioritaskan dirimu sendiri!',
+    advice:[
+      { icon:'🛑', title:'Stop & Breathe — Coba Sekarang',       body:'Lakukan Physiological Sigh 3x sekarang: Tarik napas dalam lewat hidung → tarik lagi napas pendek → hembuskan perlahan lewat mulut. Ini cara tercepat turunkan kortisol (riset Balban et al., Stanford 2023).' },
+      { icon:'💬', title:'Jangan Sendirian — Reach Out Hari Ini', body:'Hubungi 1 orang yang kamu percaya hari ini. Tidak perlu cerita panjang — cukup bilang "bisa ngobrol sebentar tidak?" Manusia butuh koneksi untuk bisa meregulasi emosi.' },
+      { icon:'🧩', title:'Pecah Masalah Jadi Kecil-kecil',        body:'Jangan coba selesaikan semuanya sekaligus. Pilih satu hal terkecil yang bisa diselesaikan hari ini. Hanya satu. Otak yang kewalahan butuh "quick win" untuk bisa restart.' },
+      { icon:'🆘', title:'Pertimbangkan Bantuan Profesional',     body:'Konsultasi dengan psikolog itu wajar dan perlu — seperti ke dokter saat sakit.\n\n📞 Into The Light Indonesia: 119 ext 8\n🌐 Psikolog online: Halodoc · SehatQ · Into The Light\n\nKamu layak mendapat dukungan lebih.' },
+    ],
+  },
+];
+
+/* ── PSS-10 Scoring ── */
+const REVERSE = new Set([3, 4, 6, 7]); // 0-indexed (PSS-10 items 4,5,7,8)
+
+function calcScore(ans) {
+  return ans.reduce((s, raw, i) => s + (REVERSE.has(i) ? 4 - raw : raw), 0);
+}
+function getTier(s) { return TIERS.find(t => s >= t.min && s <= t.max) || TIERS[0]; }
+
+/* ── State ── */
+let ST = { cur:0, answers:[], sel:null };
+
+/* ── Screen transition ── */
+function go(id) {
+  document.querySelector('.screen.active')?.classList.remove('active');
   const el = document.getElementById(id);
   el.classList.add('active');
-  window.scrollTo(0, 0);
+  el.scrollTop = 0;
+  el.style.animation = 'none';
+  void el.offsetWidth;
+  el.style.animation = 'slideInR .4s cubic-bezier(.25,.46,.45,.94) both';
 }
 
-/* ──────────────────────────────────────────────────────────────────
-   QUIZ
-────────────────────────────────────────────────────────────────── */
+/* ── Quiz ── */
 function startQuiz() {
-  state = { current: 0, answers: [], selected: null };
-  showScreen('screen-quiz');
+  ST = { cur:0, answers:[], sel:null };
+  go('s-quiz');
   renderQ(0);
 }
 
-function renderQ(idx) {
-  const q = QUESTIONS[idx];
-  state.selected = null;
+function renderQ(i) {
+  const q = QUESTIONS[i];
+  ST.sel = null;
 
-  // Progress update
-  const pct = Math.round((idx / QUESTIONS.length) * 100);
-  document.getElementById('q-label').textContent = `Pertanyaan ${idx + 1} dari ${QUESTIONS.length}`;
+  const pct = Math.round((i / QUESTIONS.length) * 100);
+  document.getElementById('q-num').textContent   = `${i+1} / ${QUESTIONS.length}`;
   document.getElementById('q-pct').textContent   = `${pct}%`;
   document.getElementById('q-prog').style.width  = `${pct}%`;
+  document.getElementById('q-badge').textContent = i + 1;
 
-  // Question badge & text — animate card
-  document.getElementById('q-badge').textContent = idx + 1;
   const card = document.getElementById('q-card');
-  card.style.animation = 'none';
-  void card.offsetWidth; // reflow to restart
-  card.style.animation = 'slideR .32s ease-out both';
-  document.getElementById('q-text').textContent = q.text;
+  card.style.animation = 'none'; void card.offsetWidth;
+  card.style.animation = 'slideInQ .3s ease-out both';
+  document.getElementById('q-text').textContent  = q.text;
 
-  // Render 5 Likert tiles
-  const optsEl = document.getElementById('q-opts');
-  optsEl.innerHTML = '';
-  LIKERT.forEach(opt => {
+  const opts = document.getElementById('q-opts');
+  opts.innerHTML = '';
+  LIKERT.forEach(o => {
     const btn = document.createElement('button');
-    btn.className = 'ans-tile';
+    btn.className = 'ans-opt';
     btn.innerHTML = `
-      <span class="tile-emoji">${opt.emoji}</span>
-      <span class="tile-num">${opt.val}</span>
-    `;
-    btn.onclick = () => pickAnswer(opt.val, btn);
-    optsEl.appendChild(btn);
+      <div class="ans-dot">${o.val}</div>
+      <span style="font-size:1.3rem;">${o.emoji}</span>
+      <span class="font-semibold text-gray-700" style="font-size:.9rem;">${o.label}</span>`;
+    btn.onclick = () => pick(o.val, btn);
+    opts.appendChild(btn);
   });
-
-  // Hide next button
   document.getElementById('btn-next').classList.add('hidden');
 }
 
-function pickAnswer(val, tileEl) {
-  // Deselect all tiles
-  document.querySelectorAll('.ans-tile').forEach(t => t.classList.remove('picked'));
-  // Select this tile
-  tileEl.classList.add('picked');
-  state.selected = val;
-  // Show next button
+function pick(val, btn) {
+  document.querySelectorAll('.ans-opt').forEach(b => b.classList.remove('chosen'));
+  btn.classList.add('chosen');
+  ST.sel = val;
   document.getElementById('btn-next').classList.remove('hidden');
+  document.getElementById('btn-next').scrollIntoView({ behavior:'smooth', block:'nearest' });
 }
 
-function nextQuestion() {
-  if (state.selected === null) return;
-  state.answers.push(state.selected);
-  state.current++;
-
-  if (state.current >= QUESTIONS.length) {
-    showResult();
-  } else {
-    renderQ(state.current);
-  }
+function nextQ() {
+  if (ST.sel === null) return;
+  ST.answers.push(ST.sel);
+  ST.cur++;
+  if (ST.cur >= QUESTIONS.length) showResult();
+  else renderQ(ST.cur);
 }
 
-/* ──────────────────────────────────────────────────────────────────
-   RESULT
-────────────────────────────────────────────────────────────────── */
+/* ── Result ── */
 function showResult() {
-  const total = calcScore(state.answers);
-  if (total === null) return;
-  const tier = getTier(total);
+  const total = calcScore(ST.answers);
+  const t     = getTier(total);
 
-  // Score card
-  document.getElementById('res-card').style.backgroundColor  = tier.cardBg;
-  document.getElementById('score-ring').style.backgroundColor = tier.ringBg;
-  document.getElementById('score-num').textContent = total;
-  document.getElementById('res-emoji').textContent    = tier.emoji;
-  document.getElementById('res-tier').textContent     = tier.tier;
-  document.getElementById('res-category').textContent = tier.category;
+  document.getElementById('res-ring').className = `score-ring anim-pop ${t.ring}`;
+  document.getElementById('res-score').textContent = total;
+  document.getElementById('res-emoji').textContent  = t.emoji;
+  document.getElementById('res-tier').textContent   = t.tier;
+  document.getElementById('res-cat').textContent    = t.cat;
 
-  // Score pointer (0–40 → 0–100%)
-  const pct = (total / 40) * 100;
-  // Small delay so the animation plays after screen transition
+  // Score pointer
   setTimeout(() => {
-    document.getElementById('score-pointer').style.left = `calc(${pct}% - 6px)`;
-  }, 400);
+    document.getElementById('score-ptr').style.left = `calc(${(total/40)*100}% - 7px)`;
+  }, 500);
 
-  // Meme section
-  document.getElementById('meme-top').textContent    = tier.memeTop;
-  document.getElementById('meme-body').innerHTML     = tier.memeBody;
-  document.getElementById('meme-bottom').textContent = tier.memeBottom;
-  document.getElementById('screen-result').querySelector('.meme-frame').style.backgroundColor = tier.cardBg;
+  // Meme
+  const url = MEME_IMAGES[t.key] || '';
+  if (url) {
+    document.getElementById('meme-img').src = url;
+    document.getElementById('meme-real').classList.remove('hidden');
+    document.getElementById('meme-ph').style.display = 'none';
+  } else {
+    document.getElementById('meme-real').classList.add('hidden');
+    document.getElementById('meme-ph').style.display = 'flex';
+    document.getElementById('ph-emoji').textContent = t.phEmoji;
+    document.getElementById('ph-top').textContent   = t.phTop;
+    document.getElementById('ph-bot').textContent   = t.phBot;
+  }
 
-  // Description — support \n as paragraph breaks
-  document.getElementById('res-desc').innerHTML = tier.desc
-    .replace(/\n/g, '<br><br>');
+  document.getElementById('res-desc').innerHTML = t.desc.replace(/\n/g, '<br><br>');
 
-  // Advice
-  document.getElementById('advice-wrap').style.backgroundColor = tier.adviceBg;
-  const adviceEl = document.getElementById('advice-list');
-  adviceEl.innerHTML = '';
-  tier.advice.forEach(item => {
-    const div = document.createElement('div');
-    div.className = 'advice-item nb-sm bg-white rounded-xl p-4';
-    div.innerHTML = `
+  const list = document.getElementById('advice-list');
+  list.innerHTML = '';
+  const delays = ['s1','s2','s3','s4'];
+  t.advice.forEach((a, i) => {
+    const d = document.createElement('div');
+    d.className = `card-sm p-4 anim-fadeup ${delays[i]}`;
+    d.innerHTML = `
       <div class="flex items-start gap-3">
-        <span class="text-2xl flex-shrink-0 mt-0.5">${item.icon}</span>
+        <span style="font-size:1.4rem;flex-shrink:0;">${a.icon}</span>
         <div>
-          <div class="font-black text-gray-900 text-sm mb-1">${item.title}</div>
-          <div class="text-gray-700 text-xs leading-relaxed">${item.body.replace(/\n/g,'<br>')}</div>
+          <div class="font-bold text-gray-800 mb-1" style="font-size:.85rem;">${a.title}</div>
+          <div class="text-gray-500 leading-relaxed" style="font-size:.78rem;">${a.body.replace(/\n/g,'<br>')}</div>
         </div>
       </div>`;
-    adviceEl.appendChild(div);
+    list.appendChild(d);
   });
 
-  showScreen('screen-result');
+  go('s-result');
 }
 
-/* ──────────────────────────────────────────────────────────────────
-   ACTIONS
-────────────────────────────────────────────────────────────────── */
-function retakeQuiz() { startQuiz(); }
+/* ── Actions ── */
+function retake() { startQuiz(); }
 
-function copyResult() {
-  const total = calcScore(state.answers);
-  if (total === null) return;
-  const tier = getTier(total);
+function copyRes() {
+  const total = calcScore(ST.answers);
+  const t     = getTier(total);
+  const badge = total<=13 ? '✨ Santai banget — vibe check passed!'
+              : total<=26 ? '⚠️ Yellow flag — perlu lebih banyak self-care'
+                          : '🚨 High stress — please reach out for support';
+  const txt = `🧘‍♂️ Stress Level Check: Gen Z Edition ⚡\nBased on PSS-10 (Cohen et al., 1983)\n\n📊 Skor: ${total}/40\n🏷️ ${t.tier} — ${t.cat}\n${badge}\n\nCek level stres kamu juga! (gratis & berbasis sains)`;
 
-  const badge =
-    total <= 13 ? '✨ Chill mode: ON. Vibe check passed!' :
-    total <= 26 ? '⚠️ Yellow flag — perlu self-care intentional'
-               : '🚨 System overload — butuh support sekarang';
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(txt)
+      .then(() => alert('✅ Disalin! Paste ke caption atau story kamu 😄'))
+      .catch(fb);
+  } else fb();
 
-  const text =
-`🧘‍♂️ Stress Level Check: Gen Z Edition ⚡
-Powered by PSS-10 (Cohen et al., 1983)
-
-📊 Skor gue: ${total}/40
-🏷️ Status: ${tier.tier} — ${tier.category}
-${badge}
-
-—
-Cek level stres kamu juga! (Quiz gratis, berbasis sains)`;
-
-  const doCopy = txt => {
-    if (navigator.clipboard?.writeText) {
-      navigator.clipboard.writeText(txt)
-        .then(() => alert('✅ Berhasil disalin! Paste ke WA, Instagram caption, atau Slack kamu 😄'))
-        .catch(fallback);
-    } else { fallback(); }
-  };
-
-  const fallback = () => {
+  function fb() {
     const ta = document.createElement('textarea');
-    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
-    document.body.appendChild(ta); ta.focus(); ta.select();
-    try { document.execCommand('copy'); alert('✅ Disalin!'); }
-    catch(e) { alert('Salin manual:\n\n' + text); }
+    Object.assign(ta.style,{position:'fixed',opacity:'0'});
+    ta.value = txt; document.body.appendChild(ta);
+    ta.select(); try{document.execCommand('copy');alert('✅ Disalin!');}catch(e){}
     document.body.removeChild(ta);
-  };
-
-  doCopy(text);
+  }
 }
-
 </script>
 </body>
 </html>
