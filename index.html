@@ -3,1053 +3,703 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Data Master: Pivot & Viz Edition 📊</title>
+  <title>Stress Level Check: Gen Z Edition 🧘‍♂️⚡</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     * { font-family: 'Space Grotesk', sans-serif; box-sizing: border-box; }
 
     /* ── Neo-Brutalism base ── */
-    .nb-card  { border: 3px solid #111827; box-shadow: 5px 5px 0 #111827; }
-    .nb-btn   { border: 3px solid #111827; box-shadow: 4px 4px 0 #111827; cursor: pointer; transition: all .1s; }
-    .nb-btn:hover  { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #111827; }
-    .nb-btn:active { transform: translate(2px,2px);  box-shadow: 2px 2px 0 #111827; }
-
-    /* ── Field cards ── */
-    .field-card {
-      border: 3px solid #111827; box-shadow: 3px 3px 0 #111827;
-      cursor: grab; user-select: none; transition: all .15s;
-      display:inline-flex; align-items:center; gap:4px;
-      padding: 6px 12px; border-radius: 10px; font-weight: 700; font-size:.85rem;
+    .nb    { border: 3px solid #111827; box-shadow: 5px 5px 0 #111827; }
+    .nb-sm { border: 2px solid #111827; box-shadow: 3px 3px 0 #111827; }
+    .nb-btn {
+      border: 3px solid #111827; box-shadow: 4px 4px 0 #111827;
+      cursor: pointer; transition: transform .1s ease, box-shadow .1s ease;
     }
-    .field-card.dragging  { opacity:.45; cursor:grabbing; }
-    .field-card.selected  { transform:scale(1.08) rotate(-2deg); box-shadow:5px 5px 0 #6d28d9; border-color:#6d28d9; }
-    .field-card:active    { cursor:grabbing; }
+    .nb-btn:hover  { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #111827; }
+    .nb-btn:active { transform: translate(2px, 2px);  box-shadow: 2px 2px 0 #111827; }
 
-    /* ── Drop zones ── */
-    .drop-zone { border: 3px dashed #6b7280; min-height: 72px; border-radius:12px; padding:8px; transition: all .2s; }
-    .drop-zone.drag-over  { border-style:solid; border-color:#7c3aed; background:rgba(124,58,237,.1); transform:scale(1.02); }
+    /* ── Answer option tiles ── */
+    .ans-tile {
+      border: 3px solid #111827; box-shadow: 3px 3px 0 #111827;
+      background: white; cursor: pointer; border-radius: 14px;
+      transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; padding: 10px 4px; gap: 2px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .ans-tile:hover  { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 #111827; }
+    .ans-tile:active { transform: translate(1px, 1px);  box-shadow: 2px 2px 0 #111827; }
+    .ans-tile.picked {
+      background: #c4b5fd; border-color: #6d28d9;
+      box-shadow: 3px 3px 0 #6d28d9; transform: translate(-1px,-1px);
+    }
+    .ans-tile .tile-num  { font-size: 1.6rem; font-weight: 800; color: #111827; line-height: 1; }
+    .ans-tile .tile-emoji{ font-size: 1.3rem; line-height: 1; }
+    .ans-tile .tile-lbl  { font-size: .58rem; font-weight: 700; color: #6b7280; text-align: center; line-height: 1.2; }
 
     /* ── Screens ── */
-    .screen { display:none; }
-    .screen.active { display:block; animation: slideUp .35s ease-out; }
+    .screen { display: none; }
+    .screen.active { display: block; }
 
-    /* ── Animations ── */
-    @keyframes slideUp    { from{transform:translateY(24px);opacity:0} to{transform:translateY(0);opacity:1} }
-    @keyframes bounceIn   { 0%{transform:scale(.3)rotate(-10deg);opacity:0} 60%{transform:scale(1.1)rotate(3deg)} 80%{transform:scale(.96)} 100%{transform:scale(1);opacity:1} }
-    @keyframes shake      { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(5px)} }
-    @keyframes float      { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
-    @keyframes pop        { 0%{transform:scale(1)} 50%{transform:scale(1.18)} 100%{transform:scale(1)} }
-    @keyframes pulse-ring { 0%{box-shadow:0 0 0 0 rgba(124,58,237,.6)} 70%{box-shadow:0 0 0 12px rgba(124,58,237,0)} 100%{box-shadow:0 0 0 0} }
+    /* ── Keyframes ── */
+    @keyframes slideR  { from{transform:translateX(40px);opacity:0} to{transform:translateX(0);opacity:1} }
+    @keyframes slideL  { from{transform:translateX(-40px);opacity:0} to{transform:translateX(0);opacity:1} }
+    @keyframes fadeUp  { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes bounceIn{ 0%{transform:scale(.4)rotate(-6deg);opacity:0} 65%{transform:scale(1.06)} 100%{transform:scale(1);opacity:1} }
+    @keyframes float   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+    @keyframes popIn   { 0%{transform:scale(0);opacity:0} 80%{transform:scale(1.08)} 100%{transform:scale(1);opacity:1} }
+    @keyframes glitch  { 0%,100%{transform:none} 25%{transform:skewX(2deg)} 75%{transform:skewX(-2deg)} }
 
-    .anim-bounce-in { animation: bounceIn .5s cubic-bezier(.175,.885,.32,1.275) both; }
-    .anim-shake     { animation: shake .45s ease both; }
-    .anim-float     { animation: float 3s ease-in-out infinite; }
-    .anim-pop       { animation: pop .3s ease; }
-    .anim-pulse     { animation: pulse-ring 1.5s infinite; }
+    .anim-slide-r  { animation: slideR .35s ease-out both; }
+    .anim-slide-l  { animation: slideL .35s ease-out both; }
+    .anim-fade-up  { animation: fadeUp .4s ease-out both; }
+    .anim-bounce   { animation: bounceIn .55s cubic-bezier(.175,.885,.32,1.275) both; }
+    .anim-float    { animation: float 3.5s ease-in-out infinite; }
+    .anim-pop      { animation: popIn .5s cubic-bezier(.175,.885,.32,1.275) both; }
+    .anim-glitch   { animation: glitch 3s ease-in-out infinite; }
 
     /* ── Progress bar ── */
-    .prog-fill { transition: width .5s ease; }
+    .prog-fill { transition: width .45s cubic-bezier(.4,0,.2,1); }
 
-    /* ── Confetti canvas ── */
-    #confetti-canvas { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:9999; display:none; }
+    /* ── Score ring ── */
+    .score-ring {
+      width: 130px; height: 130px; border-radius: 50%;
+      border: 5px solid #111827; box-shadow: 5px 5px 0 #111827;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; flex-shrink: 0;
+    }
 
-    /* ── Scrollbar hidden ── */
-    .no-scroll::-webkit-scrollbar { display:none; }
+    /* ── Meme frame ── */
+    .meme-frame { border: 4px solid #111827; box-shadow: 6px 6px 0 #111827; border-radius: 16px; overflow: hidden; }
+    .meme-bar   { background: #111827; color: white; font-weight: 900; text-align: center; padding: 10px 16px; letter-spacing: .05em; font-size: .85rem; text-transform: uppercase; }
+    .meme-body  { display: flex; align-items: center; justify-content: center; min-height: 180px; padding: 24px; }
 
-    /* ── Option buttons ── */
-    .opt-btn { transition:all .15s; text-align:left; }
-    .opt-btn.correct { background:#bbf7d0 !important; border-color:#16a34a !important; }
-    .opt-btn.wrong   { background:#fecaca !important; border-color:#dc2626 !important; }
+    /* ── Score bar pointer ── */
+    #score-pointer { transition: left .7s cubic-bezier(.4,0,.2,1); }
 
-    /* ── Touch hint ── */
-    @media(max-width:768px){ .desktop-only{display:none} .mobile-hint{display:flex!important} }
-    .mobile-hint { display:none; }
+    /* ── Advice item stagger ── */
+    .advice-item { animation: fadeUp .4s ease-out both; }
+    .advice-item:nth-child(1){ animation-delay: .05s }
+    .advice-item:nth-child(2){ animation-delay: .15s }
+    .advice-item:nth-child(3){ animation-delay: .25s }
+    .advice-item:nth-child(4){ animation-delay: .35s }
 
-    /* ── Sticky header ── */
-    #game-header { position:sticky; top:0; z-index:50; }
+    /* Scrollbar thin */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-thumb { background: #6d28d9; border-radius: 2px; }
   </style>
 </head>
-<body class="bg-gray-950 min-h-screen text-gray-900">
+<body class="min-h-screen" style="background:#0f0f1a;">
 
-<!-- ================================================================
-     GAME HEADER (hidden on start screen)
-================================================================ -->
-<header id="game-header" class="hidden bg-gray-900 border-b-4 border-gray-700 px-4 py-3">
-  <div class="max-w-3xl mx-auto flex items-center justify-between gap-3">
-    <div class="flex items-center gap-2">
-      <span class="text-2xl">📊</span>
-      <span class="text-white font-black text-base tracking-tight">Data Master</span>
-    </div>
-    <div class="flex items-center gap-3">
-      <div class="text-center">
-        <div id="hdr-score" class="text-yellow-400 font-black text-xl leading-none">0</div>
-        <div class="text-gray-500 text-xs">Skor</div>
-      </div>
-      <div id="hdr-badge" class="nb-card bg-purple-400 px-3 py-1 rounded-full">
-        <span id="hdr-title" class="text-xs font-black text-gray-900">Data Novice 🌱</span>
-      </div>
-    </div>
-  </div>
-</header>
-
-<!-- ================================================================
-     SCREEN 0 · START
-================================================================ -->
-<div id="screen-start" class="screen active min-h-screen flex flex-col items-center justify-center px-4 py-12">
+<!-- ==================================================================
+     SCREEN 0 · INTRO
+================================================================== -->
+<div id="screen-intro" class="screen active min-h-screen flex flex-col items-center justify-center px-4 py-12">
   <div class="max-w-md w-full text-center">
-    <div class="anim-float text-8xl mb-4">📊</div>
 
-    <div class="nb-card bg-yellow-300 rounded-2xl px-6 py-5 mb-5">
-      <h1 class="text-4xl font-black text-gray-900 leading-tight">DATA MASTER</h1>
-      <p class="text-purple-700 font-bold text-lg mt-1">Pivot & Viz Edition</p>
+    <div class="anim-float mb-4 text-7xl select-none">🧘‍♂️</div>
+
+    <div class="nb bg-yellow-300 rounded-2xl px-6 py-5 mb-5">
+      <h1 class="text-3xl font-black text-gray-900 leading-tight">Stress Level Check</h1>
+      <p class="text-purple-700 font-bold text-xl mt-1">Gen Z Edition ⚡</p>
     </div>
 
-    <div class="nb-card bg-white rounded-xl p-5 mb-5 text-left">
-      <p class="font-black text-gray-900 mb-3">🎯 Apa yang akan kamu pelajari?</p>
-      <ul class="space-y-2 text-sm text-gray-700">
-        <li class="flex gap-2"><span>🧩</span><span><strong>Level 1 – Pivot Puzzle:</strong> Susun field data kayak puzzle buat jawab misi bos.</span></li>
-        <li class="flex gap-2"><span>🏥</span><span><strong>Level 2 – Chart Doctor:</strong> Diagnosis & sembuhkan grafik yang "sakit" dan menyesatkan.</span></li>
-        <li class="flex gap-2"><span>📋</span><span>Dapat <strong>Cheatsheet Pivot & Viz</strong> yang bisa disimpan buat kerja sehari-hari.</span></li>
-      </ul>
-    </div>
-
-    <input id="inp-name" type="text" maxlength="20" placeholder="Nama kamu (opsional)..."
-      class="w-full border-3 border-gray-900 rounded-xl px-4 py-3 text-base font-bold bg-white mb-4 outline-none focus:border-purple-600 transition"
-      style="border-width:3px;" />
-
-    <button class="nb-btn bg-purple-500 text-white font-black text-xl px-8 py-4 rounded-xl w-full" onclick="startGame()">
-      🚀 Mulai Game!
-    </button>
-    <p class="text-gray-500 text-xs mt-4">2 Level · 6 Soal · ~10 menit · Gratis Forever ✌️</p>
-  </div>
-</div>
-
-<!-- ================================================================
-     SCREEN 1 · LEVEL 1 – PIVOT PUZZLE
-================================================================ -->
-<div id="screen-l1" class="screen min-h-screen px-4 py-6">
-  <div class="max-w-3xl mx-auto">
-
-    <!-- Level badge -->
-    <div class="nb-card bg-purple-400 rounded-xl p-4 mb-4 flex items-center gap-3 flex-wrap">
-      <span class="text-4xl">🧩</span>
-      <div class="flex-1">
-        <div class="text-xs font-black text-purple-900 uppercase tracking-widest">Level 1</div>
-        <h2 class="text-2xl font-black text-gray-900 leading-tight">The Pivot Puzzle</h2>
-        <p class="text-sm text-purple-800">Kamu adalah Data Detective di <strong>Kopi Privy ☕</strong></p>
-      </div>
-      <div class="text-right">
-        <div class="text-xs text-purple-900">Soal</div>
-        <div id="l1-counter" class="text-2xl font-black text-gray-900">1/3</div>
-      </div>
-    </div>
-
-    <!-- Progress bar -->
-    <div class="bg-gray-700 rounded-full h-3 mb-5 border-2 border-gray-800">
-      <div id="l1-prog" class="prog-fill bg-yellow-400 h-full rounded-full" style="width:0%"></div>
-    </div>
-
-    <!-- Boss mission -->
-    <div class="nb-card bg-yellow-100 rounded-xl p-5 mb-5">
-      <div class="flex items-start gap-3">
-        <span class="text-3xl mt-0.5">👔</span>
-        <div>
-          <div class="text-xs font-black text-yellow-700 uppercase tracking-widest mb-1">📨 Pesan dari Bos</div>
-          <p id="l1-question" class="font-semibold text-gray-900 text-base leading-relaxed"></p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Mobile hint -->
-    <div class="mobile-hint nb-card bg-blue-100 rounded-lg px-4 py-3 mb-4 text-sm text-blue-900 items-center gap-2">
-      <span>💡</span><span><strong>Tips mobile:</strong> Tap kartu → tap zona untuk menempatkannya!</span>
-    </div>
-
-    <!-- Field cards pool -->
-    <div class="mb-5">
-      <p class="text-gray-400 text-sm font-bold mb-2 flex items-center gap-2">
-        🃏 Field Data Tersedia
-        <span class="text-gray-600 text-xs desktop-only">(drag ke zona, atau klik kartu → klik zona)</span>
+    <div class="nb bg-white rounded-xl p-5 mb-4 text-left">
+      <p class="font-black text-gray-900 mb-3">🔬 Ini bukan quiz astrology biasa.</p>
+      <p class="text-gray-700 text-sm leading-relaxed mb-3">
+        Quiz ini menggunakan <strong>Perceived Stress Scale (PSS-10)</strong> — instrumen psikometri yang dikembangkan oleh <em>Cohen, Kamarck & Mermelstein (1983)</em> dan dipakai secara klinis di seluruh dunia untuk mengukur tingkat stres yang dirasakan.
       </p>
-      <div id="l1-pool" class="flex flex-wrap gap-2 min-h-16 p-3 bg-gray-800 rounded-xl border-2 border-gray-700"></div>
-    </div>
-
-    <!-- Drop zones 2×2 -->
-    <div class="grid grid-cols-2 gap-3 mb-5">
-      <!-- Filters -->
-      <div class="drop-zone bg-blue-50"
-        data-zone="filters"
-        ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event,'filters')"
-        onclick="onZoneClick('filters')">
-        <div class="flex items-center gap-1 mb-2">
-          <span>🔽</span><span class="font-black text-blue-800 text-xs">FILTERS</span>
-          <span class="ml-auto text-gray-400 text-xs">menyaring</span>
-        </div>
-        <div id="zone-filters" class="flex flex-wrap gap-2 min-h-10"></div>
-      </div>
-
-      <!-- Columns -->
-      <div class="drop-zone bg-green-50"
-        data-zone="columns"
-        ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event,'columns')"
-        onclick="onZoneClick('columns')">
-        <div class="flex items-center gap-1 mb-2">
-          <span>↔️</span><span class="font-black text-green-800 text-xs">COLUMNS</span>
-          <span class="ml-auto text-gray-400 text-xs">header kolom</span>
-        </div>
-        <div id="zone-columns" class="flex flex-wrap gap-2 min-h-10"></div>
-      </div>
-
-      <!-- Rows -->
-      <div class="drop-zone bg-orange-50"
-        data-zone="rows"
-        ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event,'rows')"
-        onclick="onZoneClick('rows')">
-        <div class="flex items-center gap-1 mb-2">
-          <span>↕️</span><span class="font-black text-orange-800 text-xs">ROWS</span>
-          <span class="ml-auto text-gray-400 text-xs">label baris</span>
-        </div>
-        <div id="zone-rows" class="flex flex-wrap gap-2 min-h-10"></div>
-      </div>
-
-      <!-- Values -->
-      <div class="drop-zone bg-purple-50"
-        data-zone="values"
-        ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event,'values')"
-        onclick="onZoneClick('values')">
-        <div class="flex items-center gap-1 mb-2">
-          <span>🔢</span><span class="font-black text-purple-800 text-xs">VALUES</span>
-          <span class="ml-auto text-gray-400 text-xs">yang dihitung</span>
-        </div>
-        <div id="zone-values" class="flex flex-wrap gap-2 min-h-10"></div>
+      <div class="flex flex-wrap gap-2">
+        <span class="bg-purple-100 text-purple-800 text-xs font-bold px-3 py-1 rounded-full border border-purple-300">⏱️ ~3 menit</span>
+        <span class="bg-green-100 text-green-800 text-xs font-bold px-3 py-1 rounded-full border border-green-300">🔟 10 pertanyaan</span>
+        <span class="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full border border-blue-300">🔒 100% anonim</span>
       </div>
     </div>
 
-    <!-- CTA buttons -->
-    <div class="flex gap-3 mb-5">
-      <button class="nb-btn bg-gray-300 font-bold px-5 py-3 rounded-xl flex-1" onclick="resetL1()">🔄 Reset</button>
-      <button class="nb-btn bg-green-400 font-black text-lg px-5 py-3 rounded-xl flex-1" onclick="checkL1()">✅ Cek Jawaban!</button>
+    <div class="bg-gray-800 border-2 border-gray-600 rounded-xl p-4 mb-6 text-left">
+      <p class="text-gray-300 text-xs leading-relaxed">
+        ⚠️ <strong class="text-gray-200">Disclaimer:</strong> Hasil quiz ini bersifat informatif dan bukan pengganti diagnosis dari profesional kesehatan mental. Jika kamu merasa sangat kewalahan, please reach out ke ahlinya.
+      </p>
     </div>
 
-    <!-- Feedback panel -->
-    <div id="l1-feedback" class="hidden nb-card rounded-xl p-5">
-      <div id="l1-fb-content"></div>
-      <button id="l1-fb-next" class="nb-btn bg-purple-500 text-white font-black px-6 py-3 rounded-xl mt-4 w-full text-lg hidden" onclick="nextL1()">
-        Lanjut ➡️
-      </button>
-    </div>
+    <button class="nb-btn bg-purple-500 text-white font-black text-xl px-8 py-4 rounded-xl w-full" onclick="startQuiz()">
+      🚀 Cek Level Stres Gue!
+    </button>
+    <p class="text-gray-500 text-xs mt-4">Jawab sejujurnya. Ini bukan ujian, tidak ada yang menghakimi di sini 🤝</p>
 
   </div>
 </div>
 
-<!-- ================================================================
-     SCREEN 2 · LEVEL TRANSITION
-================================================================ -->
-<div id="screen-trans" class="screen min-h-screen flex items-center justify-center px-4">
-  <div class="max-w-sm w-full text-center">
-    <div class="nb-card bg-emerald-300 rounded-2xl p-8">
-      <div class="text-6xl mb-4 anim-bounce-in">🎉</div>
-      <h2 class="text-3xl font-black text-gray-900 mb-2">Level 1 Clear!</h2>
-      <p class="text-gray-700 mb-5">Pivot Puzzle selesai! Sekarang waktunya jadi <strong>Chart Doctor</strong>!</p>
-      <div class="nb-card bg-white rounded-xl p-4 mb-5">
-        <div id="trans-score" class="text-3xl font-black text-purple-600">+0 poin</div>
-        <div class="text-gray-500 text-sm">dari Level 1</div>
-      </div>
-      <button class="nb-btn bg-red-400 text-white font-black px-8 py-4 rounded-xl text-xl w-full" onclick="startL2()">
-        🏥 Lanjut ke Chart Doctor!
-      </button>
-    </div>
-  </div>
-</div>
+<!-- ==================================================================
+     SCREEN 1 · QUIZ
+================================================================== -->
+<div id="screen-quiz" class="screen min-h-screen px-4 py-6">
+  <div class="max-w-lg mx-auto">
 
-<!-- ================================================================
-     SCREEN 3 · LEVEL 2 – CHART DOCTOR
-================================================================ -->
-<div id="screen-l2" class="screen min-h-screen px-4 py-6">
-  <div class="max-w-3xl mx-auto">
-
-    <!-- Level badge -->
-    <div class="nb-card rounded-xl p-4 mb-4 flex items-center gap-3 flex-wrap" style="background:#FF6B6B;">
-      <span class="text-4xl">🏥</span>
-      <div class="flex-1">
-        <div class="text-xs font-black text-red-900 uppercase tracking-widest">Level 2</div>
-        <h2 class="text-2xl font-black text-white leading-tight">Chart Doctor</h2>
-        <p class="text-sm text-red-100">Sembuhkan grafik yang "sakit" 🩺</p>
+    <!-- Progress -->
+    <div class="mb-6">
+      <div class="flex justify-between items-center mb-2">
+        <span id="q-label" class="text-gray-400 font-bold text-sm">Pertanyaan 1 dari 10</span>
+        <span id="q-pct"   class="text-purple-400 font-black text-sm">0%</span>
       </div>
-      <div class="text-right">
-        <div class="text-xs text-red-200">Soal</div>
-        <div id="l2-counter" class="text-2xl font-black text-white">1/3</div>
+      <div class="bg-gray-800 rounded-full h-3 border-2 border-gray-700 overflow-hidden">
+        <div id="q-prog" class="prog-fill bg-purple-400 h-full rounded-full" style="width:0%"></div>
       </div>
     </div>
 
-    <!-- Progress bar -->
-    <div class="bg-gray-700 rounded-full h-3 mb-5 border-2 border-gray-800">
-      <div id="l2-prog" class="prog-fill bg-red-400 h-full rounded-full" style="width:0%"></div>
+    <!-- Context pill -->
+    <div class="flex items-center gap-2 mb-3">
+      <span class="bg-gray-800 text-gray-400 text-xs font-bold px-3 py-1 rounded-full border border-gray-700">
+        📅 Sebulan terakhir, seberapa sering...
+      </span>
     </div>
 
-    <!-- Sick chart -->
-    <div class="nb-card bg-white rounded-xl p-5 mb-4">
-      <div class="flex items-center gap-2 mb-3 flex-wrap">
-        <span class="text-xl">🤒</span>
-        <h3 class="font-black text-gray-900 text-base">Grafik Pasien:</h3>
-        <div id="l2-tag" class="ml-auto bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full"></div>
-      </div>
-      <div id="l2-chart-box" class="flex items-center justify-center overflow-hidden rounded-lg" style="min-height:260px; background:#f9fafb;">
-      </div>
-    </div>
-
-    <!-- Diagnosis -->
-    <div class="nb-card bg-yellow-50 rounded-xl p-4 mb-4">
-      <div class="flex items-start gap-2">
-        <span class="text-xl mt-0.5">🔍</span>
-        <div>
-          <div class="font-black text-gray-900 text-xs uppercase tracking-wide mb-1">Diagnosis:</div>
-          <p id="l2-diag" class="text-gray-800 text-sm font-medium"></p>
-        </div>
+    <!-- Question card -->
+    <div id="q-card" class="nb bg-white rounded-2xl p-6 mb-6">
+      <div class="flex items-start gap-3">
+        <div id="q-badge" class="flex-shrink-0 w-9 h-9 rounded-full border-3 border-gray-900 flex items-center justify-center font-black text-base bg-purple-300" style="border-width:3px; min-width:36px;"></div>
+        <p id="q-text" class="font-semibold text-gray-900 text-lg leading-relaxed"></p>
       </div>
     </div>
 
-    <!-- Options -->
-    <h3 class="text-gray-300 font-bold text-sm mb-3">💊 Pilih Resep yang Tepat:</h3>
-    <div id="l2-opts" class="flex flex-col gap-3 mb-5"></div>
-
-    <!-- Explanation -->
-    <div id="l2-explain" class="hidden nb-card rounded-xl p-5">
-      <div id="l2-exp-content"></div>
-      <button class="nb-btn bg-red-500 text-white font-black px-6 py-3 rounded-xl mt-4 w-full text-lg" onclick="nextL2()">
-        Lanjut ➡️
-      </button>
+    <!-- Likert header labels -->
+    <div class="grid grid-cols-5 gap-2 mb-2 px-1">
+      <div class="text-center text-gray-500 text-xs font-bold leading-tight">Gak<br>Pernah</div>
+      <div class="text-center text-gray-500 text-xs font-bold leading-tight">Jarang<br>Banget</div>
+      <div class="text-center text-gray-500 text-xs font-bold leading-tight">Kadang-<br>Kadang</div>
+      <div class="text-center text-gray-500 text-xs font-bold leading-tight">Lumayan<br>Sering</div>
+      <div class="text-center text-gray-500 text-xs font-bold leading-tight">Sering<br>Banget</div>
     </div>
+
+    <!-- Answer tiles (5 options) -->
+    <div id="q-opts" class="grid grid-cols-5 gap-2 mb-6">
+      <!-- Injected by JS -->
+    </div>
+
+    <!-- Next button (appears after selection) -->
+    <button id="btn-next"
+      class="nb-btn bg-green-400 text-gray-900 font-black text-lg px-6 py-3 rounded-xl w-full hidden"
+      onclick="nextQuestion()">
+      Lanjut ➡️
+    </button>
 
   </div>
 </div>
 
-<!-- ================================================================
-     SCREEN 4 · END SCREEN
-================================================================ -->
-<div id="screen-end" class="screen min-h-screen px-4 py-10">
+<!-- ==================================================================
+     SCREEN 2 · RESULT
+================================================================== -->
+<div id="screen-result" class="screen min-h-screen px-4 py-8">
   <div class="max-w-xl mx-auto">
 
-    <!-- Result card -->
-    <div id="end-result-card" class="nb-card bg-yellow-300 rounded-2xl p-6 mb-6 text-center">
-      <div id="end-trophy" class="text-8xl mb-3 anim-bounce-in">🏆</div>
-      <div id="end-player" class="text-gray-600 font-bold text-base mb-1"></div>
-      <div id="end-title" class="text-2xl font-black text-gray-900 mb-4"></div>
-      <div id="end-stars" class="text-4xl mb-4"></div>
+    <!-- Score card -->
+    <div id="res-card" class="nb rounded-2xl p-6 mb-5 anim-bounce">
+      <p class="text-center text-gray-600 font-bold text-sm mb-4">Skor PSS-10 kamu:</p>
 
-      <!-- Score grid -->
-      <div class="nb-card bg-white rounded-xl p-4">
-        <div class="grid grid-cols-3 gap-4 text-center">
-          <div>
-            <div id="end-l1" class="text-2xl font-black text-purple-600">0</div>
-            <div class="text-xs text-gray-500">Level 1</div>
+      <div class="flex items-center justify-center gap-5 mb-5">
+        <div id="score-ring" class="score-ring anim-pop">
+          <div id="score-num" class="font-black leading-none" style="font-size:3rem; color:#111827;"></div>
+          <div class="text-xs font-bold text-gray-500">/ 40</div>
+        </div>
+        <div>
+          <div id="res-emoji" class="text-5xl mb-1"></div>
+          <div id="res-tier"     class="font-black text-gray-900 text-base uppercase tracking-wide"></div>
+          <div id="res-category" class="font-black text-gray-800 text-xl leading-tight mt-0.5"></div>
+        </div>
+      </div>
+
+      <!-- Score range bar -->
+      <div class="bg-gray-100 rounded-xl p-3 border-2 border-gray-200">
+        <div class="flex gap-0.5 mb-1 rounded-full overflow-hidden">
+          <div class="flex-1 h-2.5" style="background:#6ee7b7; border-radius:4px 0 0 4px;"></div>
+          <div class="flex-1 h-2.5" style="background:#fde68a;"></div>
+          <div class="flex-1 h-2.5" style="background:#fca5a5; border-radius:0 4px 4px 0;"></div>
+        </div>
+        <div class="relative h-3">
+          <div id="score-pointer"
+            class="absolute top-0 w-3 h-3 rounded-full border-2 border-gray-900"
+            style="left:0%; margin-left:-6px; background:#111827;">
           </div>
-          <div>
-            <div id="end-l2" class="text-2xl font-black text-red-500">0</div>
-            <div class="text-xs text-gray-500">Level 2</div>
-          </div>
-          <div>
-            <div id="end-total" class="text-2xl font-black text-yellow-700">0</div>
-            <div class="text-xs text-gray-500">Total Skor</div>
-          </div>
+        </div>
+        <div class="flex justify-between text-xs text-gray-500 font-semibold mt-0.5">
+          <span>0 ✨</span><span>14 ⚠️</span><span>27 🚨</span><span>40</span>
         </div>
       </div>
     </div>
 
-    <!-- Cheatsheet -->
-    <div class="nb-card bg-white rounded-xl p-6 mb-6">
-      <h3 class="font-black text-gray-900 text-xl mb-4 flex items-center gap-2">
-        📋 Cheatsheet Pivot & Viz
-        <span class="text-xs font-normal text-gray-400 ml-auto">simpan ini!</span>
-      </h3>
+    <!-- Meme card -->
+    <div class="meme-frame mb-5 anim-fade-up" style="animation-delay:.1s">
+      <div id="meme-top"    class="meme-bar"></div>
+      <div id="meme-body"   class="meme-body"></div>
+      <div id="meme-bottom" class="meme-bar"></div>
+    </div>
 
-      <!-- Pivot section -->
-      <div class="mb-5">
-        <p class="font-black text-purple-700 text-sm mb-3">🧩 PIVOT TABLE — PANDUAN ZONA</p>
-        <div class="grid grid-cols-2 gap-2 text-sm">
-          <div class="bg-blue-50 rounded-lg p-3 border-l-4 border-blue-400">
-            <div class="font-black text-blue-800">🔽 FILTERS</div>
-            <div class="text-gray-600 text-xs mt-1">Menyaring seluruh dataset. Contoh: Periode, Region, Status.</div>
-          </div>
-          <div class="bg-green-50 rounded-lg p-3 border-l-4 border-green-400">
-            <div class="font-black text-green-800">↔️ COLUMNS</div>
-            <div class="text-gray-600 text-xs mt-1">Jadi header kolom horizontal. Contoh: Bulan, Cabang.</div>
-          </div>
-          <div class="bg-orange-50 rounded-lg p-3 border-l-4 border-orange-400">
-            <div class="font-black text-orange-800">↕️ ROWS</div>
-            <div class="text-gray-600 text-xs mt-1">Jadi label baris. Contoh: Kategori, Nama Produk.</div>
-          </div>
-          <div class="bg-purple-50 rounded-lg p-3 border-l-4 border-purple-400">
-            <div class="font-black text-purple-800">🔢 VALUES</div>
-            <div class="text-gray-600 text-xs mt-1">Angka yang dihitung (SUM/COUNT/AVG). Contoh: Omset, Qty.</div>
-          </div>
-        </div>
-      </div>
+    <!-- Description -->
+    <div class="nb bg-white rounded-xl p-5 mb-5 anim-fade-up" style="animation-delay:.2s">
+      <p class="font-black text-gray-900 mb-2">📢 Situasi kamu saat ini:</p>
+      <p id="res-desc" class="text-gray-700 text-sm leading-relaxed"></p>
+    </div>
 
-      <!-- Viz section -->
-      <div>
-        <p class="font-black text-red-600 text-sm mb-3">📊 VIZ DESIGN — 5 ATURAN EMAS</p>
-        <div class="space-y-2 text-sm">
-          <div class="flex gap-2 bg-gray-50 rounded-lg p-3">
-            <span class="text-green-600 font-black text-base">✓</span>
-            <div><strong>Bar Chart</strong> = Perbandingan kategori. Horizontal jika label panjang atau &gt;6 item.</div>
-          </div>
-          <div class="flex gap-2 bg-gray-50 rounded-lg p-3">
-            <span class="text-green-600 font-black text-base">✓</span>
-            <div><strong>Line Chart</strong> = Tren waktu. Ideal untuk perubahan dari waktu ke waktu.</div>
-          </div>
-          <div class="flex gap-2 bg-gray-50 rounded-lg p-3">
-            <span class="text-green-600 font-black text-base">✓</span>
-            <div><strong>Pie/Donut</strong> = Proporsi. Maksimal 5 irisan, selisih harus signifikan.</div>
-          </div>
-          <div class="flex gap-2 bg-gray-50 rounded-lg p-3">
-            <span class="text-red-500 font-black text-base">✗</span>
-            <div><strong>Hindari:</strong> 3D chart (distorsi perspektif), warna pelangi (gangguan fokus), dual axis membingungkan.</div>
-          </div>
-          <div class="flex gap-2 bg-yellow-50 rounded-lg p-3 border-l-4 border-yellow-400">
-            <span class="text-yellow-600 font-black text-base">★</span>
-            <div><strong>Grey-Out Trick:</strong> Abu-abukan semua, highlight 1 data target pakai warna neon. Teknik eksekutif pro!</div>
-          </div>
-        </div>
-      </div>
+    <!-- Advice -->
+    <div id="advice-wrap" class="nb rounded-xl p-5 mb-5 anim-fade-up" style="animation-delay:.3s">
+      <p class="font-black text-gray-900 mb-4">💊 Resep Anti-Stres berbasis sains:</p>
+      <div id="advice-list" class="space-y-3"></div>
+    </div>
+
+    <!-- Attribution -->
+    <div class="bg-gray-800 border-2 border-gray-700 rounded-xl p-4 mb-5 text-center">
+      <p class="text-gray-400 text-xs leading-relaxed">
+        📊 Berdasarkan <strong class="text-gray-300">Perceived Stress Scale (PSS-10)</strong><br>
+        Cohen, S., Kamarck, T., &amp; Mermelstein, R. (1983) · Sumber resmi:
+        <span class="text-purple-400">NH Dept. of Administrative Services</span>
+      </p>
     </div>
 
     <!-- Action buttons -->
     <div class="flex gap-3">
-      <button class="nb-btn bg-purple-500 text-white font-black px-5 py-4 rounded-xl flex-1" onclick="restartGame()">
-        🔄 Main Lagi!
+      <button class="nb-btn bg-purple-500 text-white font-black px-5 py-4 rounded-xl flex-1" onclick="retakeQuiz()">
+        🔄 Ulangi Quiz
       </button>
-      <button class="nb-btn bg-emerald-400 text-gray-900 font-black px-5 py-4 rounded-xl flex-1" onclick="shareScore()">
-        📤 Share Skor
+      <button class="nb-btn bg-green-400 text-gray-900 font-black px-5 py-4 rounded-xl flex-1" onclick="copyResult()">
+        📋 Copy Hasil
       </button>
     </div>
 
   </div>
 </div>
 
-<!-- Confetti canvas -->
-<canvas id="confetti-canvas"></canvas>
-
-<!-- ================================================================
-     JAVASCRIPT — GAME ENGINE
-================================================================ -->
+<!-- ==================================================================
+     JAVASCRIPT
+================================================================== -->
 <script>
-/* ── STATE ── */
-let gs = {
-  name: 'Player',
-  score: 0, l1Score: 0, l2Score: 0,
-  l1q: 0, l2q: 0,
-  l1done: false, l2done: false,
-  selectedCard: null,   // { field, fromZone } for click-based placement
-  l1Attempt: 0,
+
+/* ──────────────────────────────────────────────────────────────────
+   PSS-10 QUESTIONS — Gen Z adapted
+   Source: Cohen, S. et al. (1983) / NH DAS Wellness
+   Reverse-scored items: PSS-10 item numbers 4, 5, 7, 8
+   In 0-indexed JS array: indices 3, 4, 6, 7
+   Reverse formula: score = 4 - rawAnswer
+
+   📝 TO ADD A QUESTION: copy an object below and keep the same
+      structure. Set reverse:true only for PSS-10 items 4,5,7,8.
+────────────────────────────────────────────────────────────────── */
+const QUESTIONS = [
+  {
+    // PSS-10 item 1 (regular)
+    text: '...kamu nge-freak out gara-gara sesuatu yang tiba-tiba terjadi dan bikin hari kamu jadi chaos tanpa peringatan?',
+    reverse: false,
+  },
+  {
+    // PSS-10 item 2 (regular)
+    text: '...kamu ngerasa gak bisa kontrol hal-hal penting dalam hidupmu sendiri?',
+    reverse: false,
+  },
+  {
+    // PSS-10 item 3 (regular)
+    text: '...kamu ngerasa nervous, gelisah, atau overthinking mode ON sampai susah fokus sama hal lain?',
+    reverse: false,
+  },
+  {
+    // PSS-10 item 4 — ⚠️ REVERSE SCORED
+    text: '...kamu ngerasa cukup yakin dan capable buat handle semua drama dan masalah pribadi yang datang?',
+    reverse: true,
+  },
+  {
+    // PSS-10 item 5 — ⚠️ REVERSE SCORED
+    text: '...hidup kamu ngerasa on-track dan berjalan sesuai rencana — literally "everything falls into place" energy?',
+    reverse: true,
+  },
+  {
+    // PSS-10 item 6 (regular)
+    text: '...kamu ngerasa overwhelmed dan gak sanggup ngerjain semua yang ada di to-do list kamu?',
+    reverse: false,
+  },
+  {
+    // PSS-10 item 7 — ⚠️ REVERSE SCORED
+    text: '...kamu berhasil stay calm dan gak gampang tersulut emosi dari hal-hal yang biasanya bikin kamu kesel?',
+    reverse: true,
+  },
+  {
+    // PSS-10 item 8 — ⚠️ REVERSE SCORED
+    text: '...kamu ngerasa in-control, on top of things, dan basically punya "I got this" vibes sepanjang hari?',
+    reverse: true,
+  },
+  {
+    // PSS-10 item 9 (regular)
+    text: '...kamu emosi atau kesal gara-gara sesuatu yang ada di luar kendali kamu sama sekali?',
+    reverse: false,
+  },
+  {
+    // PSS-10 item 10 (regular)
+    text: '...kamu ngerasa masalah dan tekanan menumpuk begitu tinggi sampai rasanya udah mau nyerah aja?',
+    reverse: false,
+  },
+];
+
+/* Likert options (0–4) */
+const LIKERT = [
+  { val: 0, emoji: '😌', label: 'Gak\nPernah' },
+  { val: 1, emoji: '🙂', label: 'Jarang\nBanget' },
+  { val: 2, emoji: '😐', label: 'Kadang\nKadang' },
+  { val: 3, emoji: '😟', label: 'Lumayan\nSering' },
+  { val: 4, emoji: '😰', label: 'Sering\nBanget' },
+];
+
+/* ──────────────────────────────────────────────────────────────────
+   RESULT TIERS
+   PSS-10 interpretive ranges (Cohen, 1983):
+   Low: 0–13 · Moderate: 14–26 · High: 27–40
+────────────────────────────────────────────────────────────────── */
+const TIERS = [
+  {
+    min: 0, max: 13,
+    tier:     'LOW STRESS',
+    category: 'Vibe Check: PASSED ✨',
+    emoji:    '😎',
+    ringBg:   '#6ee7b7',
+    cardBg:   '#ecfdf5',
+    adviceBg: '#f0fdf4',
+
+    memeTop:    'POV: YOU ACTUALLY HAVE YOUR LIFE TOGETHER',
+    memeBody: `
+      <div style="text-align:center; line-height:1.3;">
+        <div style="font-size:4.5rem;">😎</div>
+        <div style="font-size:1.5rem; margin:8px 0;">🎵 🧘‍♂️ 🎵</div>
+        <div style="font-size:.85rem; font-weight:800; color:#065f46; letter-spacing:.05em;">
+          *lo-fi beats to chill/study to plays*
+        </div>
+      </div>`,
+    memeBottom: '"STRESS? I DON\'T KNOW HER." — YOU, APPARENTLY',
+
+    desc: 'Bro/sis, kamu basically adalah definisi <strong>chill yang sesungguhnya</strong>. Skor PSS-10 kamu menunjukkan bahwa stres yang kamu rasakan tergolong rendah dan kamu cukup baik dalam mengelola tekanan hidup sehari-hari.\n\nIni bukan berarti hidupmu tanpa masalah. Kamu punya resiliensi mental yang solid. Orang-orang sekitar mungkin iri sama aura tenang kamu. Pertahankan ini — dan ingat bahwa maintaining mental health itu butuh effort, sama kayak fitness fisik. ✨',
+
+    advice: [
+      {
+        icon: '📓',
+        title: 'Gratitude Journaling (3 menit/malam)',
+        body: 'Tulis 3 hal yang kamu syukuri setiap malam — <em>spesifik</em>, bukan "hari ini baik-baik aja". Riset dari UC Davis menunjukkan praktek ini memperkuat <strong>koneksi saraf positif</strong> di otak dan meningkatkan well-being jangka panjang.',
+      },
+      {
+        icon: '🏃',
+        title: 'Maintain Rutinitas yang Udah Jalan',
+        body: 'Stres rendahmu sebagian besar karena rutinitas yang sudah terbentuk. Jangan sampai "satu hari libur" berubah jadi "sebulan chaos". Consistency > intensity.',
+      },
+      {
+        icon: '🤝',
+        title: 'Jadi Support System dengan Batas Sehat',
+        body: 'Dengan mental kuat, kamu punya kapasitas untuk mendukung orang lain. Tapi tetap set <strong>boundaries yang jelas</strong>. Being a support system ≠ menyerap semua masalah orang.',
+      },
+      {
+        icon: '🌱',
+        title: 'Explore Challenge Baru',
+        body: 'Kamu punya bandwidth mental yang cukup untuk tumbuh. Coba skill baru, hobi baru, atau challenge yang selama ini ada di bucket list kamu. Mental health bukan cuma "tidak sakit" — tapi juga "berkembang".',
+      },
+    ],
+  },
+
+  {
+    min: 14, max: 26,
+    tier:     'MODERATE STRESS',
+    category: 'Yellow Flag Alert ⚠️',
+    emoji:    '😮‍💨',
+    ringBg:   '#fde68a',
+    cardBg:   '#fffbeb',
+    adviceBg: '#fefce8',
+
+    memeTop: 'CURRENT MENTAL STATE:',
+    memeBody: `
+      <div style="text-align:center; line-height:1.35;">
+        <div style="font-size:4rem;">🔥🐶🔥</div>
+        <div style="font-size:1.3rem; font-weight:900; color:#92400e; margin:6px 0;">"This is fine."</div>
+        <div style="font-size:.8rem; font-weight:700; color:#b45309; font-style:italic;">
+          *everything around is on fire*<br>*continues to sip coffee*
+        </div>
+      </div>`,
+    memeBottom: '"I\'M FINE." (NARRATOR: THEY WERE NOT FINE)',
+
+    desc: 'Kamu masih functioning — masih bisa scroll, masih bisa ketawa di grup chat, masih ngerjain kerjaan. Tapi ada <strong>yellow flag yang perlu diperhatiin serius</strong>.\n\nSkor PSS-10 kamu menunjukkan stres level sedang. Ini artinya kamu mungkin mulai ngerasain: mood yang gampang naik-turun, motivasi yang fluktuatif, atau "I\'m fine" yang udah jadi jawaban autopilot padahal sebenernya kamu agak kewalahan. Ini waktunya self-care yang <em>intentional</em>, bukan reaktif setelah udah burnout.',
+
+    advice: [
+      {
+        icon: '🌬️',
+        title: 'Physiological Sigh — Teknik Breathing dari Stanford',
+        body: '<strong>Cara:</strong> Tarik napas panjang lewat hidung → langsung tarik lagi napas pendek lewat hidung (double inhale) → hembuskan PERLAHAN lewat mulut. Ulangi 3–5x.\n\n<strong>Kenapa works:</strong> Double inhale mengisi penuh alveoli paru-paru yang kolaps, memaksimalkan transfer O₂, dan langsung mengaktifkan sistem parasimpatis (mode tenang). Lebih efektif dari deep breathing biasa.',
+      },
+      {
+        icon: '⏸️',
+        title: 'Micro-break 2 Menit per 90 Menit',
+        body: 'Otak manusia memiliki siklus ultradian ~90 menit. Setelah itu, performa turun. Ambil 2 menit penuh untuk berdiri, lihat ke jarak jauh (minimum 20 kaki/6 meter), atau sekadar bengong. Ini bukan malas — ini maintenance sistem saraf kamu.',
+      },
+      {
+        icon: '📝',
+        title: 'Brain Dump Journaling',
+        body: 'Ambil kertas kosong dan tulis SEMUA yang ada di kepala kamu tanpa filter selama 5 menit. Gak perlu rapi, gak perlu struktur. Setelah selesai, otak terasa lebih ringan. Ini secara literal memindahkan "working memory load" dari otak ke kertas — seperti clear cache.',
+      },
+      {
+        icon: '📵',
+        title: 'Digital Detox 1 Jam Sebelum Tidur',
+        body: 'Blue light dari layar + doom-scrolling → cortisol naik menjelang tidur → kualitas tidur jelek → stres makin tinggi keesokan paginya. Jauhkan HP dari tempat tidur. Buku, journaling, atau stretching ringan adalah alternatif yang jauh lebih baik buat otak.',
+      },
+    ],
+  },
+
+  {
+    min: 27, max: 40,
+    tier:     'HIGH STRESS',
+    category: 'System Overload 🚨',
+    emoji:    '😭',
+    ringBg:   '#fca5a5',
+    cardBg:   '#fff1f2',
+    adviceBg: '#fef2f2',
+
+    memeTop: 'BRAIN.EXE HAS STOPPED WORKING',
+    memeBody: `
+      <div style="text-align:center; line-height:1.35;">
+        <div style="font-size:3.5rem;">💀😭💀</div>
+        <div style="font-size:.9rem; font-weight:900; color:#991b1b; margin:8px 0; letter-spacing:.02em; font-family:monospace;">
+          ERROR 0x000006A4<br>
+          404: ENERGY NOT FOUND<br>
+          MENTAL_STACK_OVERFLOW
+        </div>
+        <div style="font-size:1.2rem;">⚠️🔴⚠️</div>
+      </div>`,
+    memeBottom: 'PLEASE PRESS CTRL+ALT+DEL ON YOUR LIFE ASAP',
+
+    desc: 'Okay, kita perlu ngobrol serius — tapi dengan penuh kasih sayang ya. 💙\n\nSkor PSS-10 kamu menunjukkan tingkat stres yang <strong>tinggi</strong>. Ini bukan drama, ini valid dan ini nyata. Kamu mungkin udah lama ngerasain salah satu atau beberapa dari ini: susah tidur atau tidur terus, gampang marah sama hal-hal kecil, ngerasa kosong atau disconnected, susah konsentrasi, atau ngerasa gak ada energi untuk hal-hal yang dulu kamu sukai.\n\n<strong>Ini bukan tanda kelemahan.</strong> Ini tanda bahwa kamu udah terlalu lama kerja keras tanpa cukup recovery — seperti HP yang charger-nya rusak dan terus dipaksa hidup. Sekarang adalah waktunya prioritaskan dirimu sendiri.',
+
+    advice: [
+      {
+        icon: '🛑',
+        title: 'BERHENTI & BREATHE — Lakukan Ini Sekarang Juga',
+        body: 'Sebelum lanjut baca, lakukan Physiological Sigh 3x sekarang: Tarik napas dalam lewat hidung → tarik lagi napas pendek → hembuskan PERLAHAN lewat mulut. Ini bukan opsional. Lakukan sekarang.\n\nCortisol turun dalam hitungan menit dengan teknik ini (penelitian: Balban et al., Stanford 2023).',
+      },
+      {
+        icon: '💬',
+        title: 'Reach Out — Jangan Sendirian Hari Ini',
+        body: 'Hubungi 1 orang yang kamu percaya hari ini. Literally hari ini, bukan "nanti". Gak harus cerita panjang — cukup bilang "eh bisa ngobrol bentar gak?"\n\nManusia adalah makhluk sosial yang membutuhkan koneksi untuk regulasi emosi. Menyendiri saat stres tinggi bukan stoik — itu justru memperpanjang penderitaan.',
+      },
+      {
+        icon: '🧩',
+        title: 'Break Down — Satu Hal Terkecil Dulu',
+        body: 'Jangan coba selesaikan semuanya sekaligus. Itu imposibel dan justru bikin makin overwhelmed. Pilih <em>satu</em> hal terkecil yang bisa kamu tangani hari ini. Selesaikan itu saja. Otak yang kelelahan butuh "quick win" untuk restart sistem reward-nya.',
+      },
+      {
+        icon: '🆘',
+        title: 'Pertimbangkan Bantuan Profesional — Ini Bukan Tanda Lemah',
+        body: 'Ngobrol sama psikolog itu seperti ke dokter saat demam tinggi — wajar dan perlu. Ini tanda bahwa kamu <em>cerdas dan self-aware</em>.\n\n<strong>Akses bantuan:</strong> Into The Light Indonesia: <strong>119 ext 8</strong> | Psikolog via Halodoc, SehatQ, atau Into The Light.\n\nKamu layak mendapat dukungan lebih dari yang selama ini kamu berikan ke dirimu sendiri.',
+      },
+    ],
+  },
+];
+
+/* ──────────────────────────────────────────────────────────────────
+   PSS-10 SCORING
+   Reverse-scored item indices (0-based): 3, 4, 6, 7
+   (PSS-10 item numbers 4, 5, 7, 8 in 1-based numbering)
+   Formula: reverse_score = 4 - raw_answer
+────────────────────────────────────────────────────────────────── */
+const REVERSE_IDX = new Set([3, 4, 6, 7]);
+
+function calcScore(answers) {
+  // Validate: must have exactly 10 answers
+  if (answers.length !== 10) return null;
+  return answers.reduce((sum, raw, idx) => {
+    const scored = REVERSE_IDX.has(idx) ? (4 - raw) : raw;
+    return sum + scored;
+  }, 0);
+}
+
+function getTier(score) {
+  return TIERS.find(t => score >= t.min && score <= t.max) || TIERS[0];
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   GAME STATE
+────────────────────────────────────────────────────────────────── */
+let state = {
+  current: 0,
+  answers: [],
+  selected: null,
 };
 
-/* ─────────────────────────────────────────────────────────────────
-   LEVEL 1 DATA
-   📝 To add a new question: copy one object below and follow the same structure.
-   - fields: array of draggable cards available for this question
-   - answer: correct placement { filters:[], columns:[], rows:[], values:[] }
-   - tip: educational tip shown after correct answer
-───────────────────────────────────────────────────────────────── */
-const L1_QUESTIONS = [
-  {
-    q: `Bos berkata: "Gue mau lihat TOTAL OMSET per KATEGORI MINUMAN. Tampilinnya per NAMA CABANG biar bisa dibandingin antar cabang. Filter berdasarkan TAHUN 2024 aja ya."`,
-    fields: [
-      { id:'tanggal',           label:'📅 Tanggal',           color:'bg-sky-200' },
-      { id:'nama_cabang',       label:'🏪 Nama Cabang',       color:'bg-emerald-200' },
-      { id:'kategori_minuman',  label:'☕ Kategori Minuman',  color:'bg-orange-200' },
-      { id:'total_omset',       label:'💰 Total Omset',       color:'bg-violet-200' },
-      { id:'nama_kasir',        label:'👤 Nama Kasir',        color:'bg-pink-200' },
-    ],
-    answer: { filters:['tanggal'], columns:['nama_cabang'], rows:['kategori_minuman'], values:['total_omset'] },
-    tip: '🎯 ROWS = yang dikategorikan (Kategori Minuman). COLUMNS = yang dibandingin (Cabang). VALUES = yang dihitung (Omset). FILTERS = pembatas periode (Tanggal).',
-  },
-  {
-    q: `Bos HR minta: "Gue perlu JUMLAH TRANSAKSI per NAMA KASIR biar tahu siapa yang paling produktif. Saring datanya untuk BULAN DESEMBER aja."`,
-    fields: [
-      { id:'tanggal',           label:'📅 Tanggal',           color:'bg-sky-200' },
-      { id:'nama_cabang',       label:'🏪 Nama Cabang',       color:'bg-emerald-200' },
-      { id:'kategori_minuman',  label:'☕ Kategori Minuman',  color:'bg-orange-200' },
-      { id:'total_omset',       label:'💰 Total Omset',       color:'bg-violet-200' },
-      { id:'nama_kasir',        label:'👤 Nama Kasir',        color:'bg-pink-200' },
-      { id:'jml_transaksi',     label:'🔢 Jml Transaksi',     color:'bg-yellow-200' },
-    ],
-    answer: { filters:['tanggal'], columns:[], rows:['nama_kasir'], values:['jml_transaksi'] },
-    tip: '🎯 ROWS = siapa yang dibandingkan (Nama Kasir). VALUES = yang dihitung (Jumlah Transaksi). COLUMNS kosong karena tidak perlu breakdown tambahan. FILTERS = bulan Desember.',
-  },
-  {
-    q: `Manajer ops minta: "Tampilin RATA-RATA OMSET per NAMA CABANG. Tapi kasih breakdown per KATEGORI MINUMAN juga, biar keliatan produk mana yang paling nge-boost tiap cabang."`,
-    fields: [
-      { id:'nama_cabang',       label:'🏪 Nama Cabang',       color:'bg-emerald-200' },
-      { id:'kategori_minuman',  label:'☕ Kategori Minuman',  color:'bg-orange-200' },
-      { id:'total_omset',       label:'💰 Total Omset',       color:'bg-violet-200' },
-      { id:'nama_kasir',        label:'👤 Nama Kasir',        color:'bg-pink-200' },
-      { id:'qty_terjual',       label:'📦 Qty Terjual',       color:'bg-teal-200' },
-    ],
-    answer: { filters:[], columns:['kategori_minuman'], rows:['nama_cabang'], values:['total_omset'] },
-    tip: '🎯 ROWS = entitas utama (Nama Cabang). COLUMNS = breakdown tambahan (Kategori Minuman). VALUES = angka yang dirata-rata (Total Omset). FILTERS kosong karena mau lihat semua data.',
-  },
-];
-
-/* ─────────────────────────────────────────────────────────────────
-   LEVEL 2 DATA
-   📝 To add a new question: copy one object and follow the same structure.
-   - chartType: 'sick-pie' | 'sick-rainbow' | 'sick-dual' | 'sick-line'
-   - options: array of { id, text, correct } — only ONE should be correct:true
-   - explanation: HTML string shown after answering
-───────────────────────────────────────────────────────────────── */
-const L2_QUESTIONS = [
-  {
-    title: 'Pie Chart 3D Chaos',
-    diag: 'Klien menggunakan Pie Chart 3D dengan 12 irisan warna-warni untuk data penjualan per produk. Perspektif 3D membuat irisan di depan tampak lebih besar dari aslinya, dan 12 warna mempersulit otak untuk membandingkan.',
-    chartType: 'sick-pie',
-    options: [
-      { id:'a', text:'📊 Ganti ke Horizontal Bar Chart — panjang batang lebih mudah dibandingkan otak daripada sudut pie', correct:true },
-      { id:'b', text:'🔡 Tambahkan legend yang lebih besar agar setiap irisan terbaca labelnya', correct:false },
-      { id:'c', text:'🎭 Buat 3D-nya lebih dramatis agar tampak lebih "profesional" dan menarik', correct:false },
-      { id:'d', text:'🍩 Ubah ke Donut Chart 3D dengan animasi berputar biar lebih interaktif', correct:false },
-    ],
-    explanation: '✅ <strong>Horizontal Bar Chart</strong> adalah resep yang tepat karena:<br>• Otak manusia jauh lebih akurat membandingkan <em>panjang</em> batang daripada <em>sudut/luas</em> irisan pie.<br>• Label kategori bisa ditulis panjang di kiri tanpa terpotong.<br>• Tidak ada distorsi perspektif 3D yang menyesatkan.<br>• 12+ kategori tetap terbaca — cukup scroll secara vertikal.',
-  },
-  {
-    title: 'Rainbow Bar Syndrome',
-    diag: 'Bar Chart performa 6 cabang menggunakan 6 warna berbeda untuk tiap batang. Hasilnya seperti pelangi — cantik secara estetika, tapi warna berbeda tidak membawa informasi tambahan apapun, justru mengganggu fokus.',
-    chartType: 'sick-rainbow',
-    options: [
-      { id:'a', text:'🌈 Tambahkan lebih banyak gradasi warna agar setiap cabang makin mudah dibedakan', correct:false },
-      { id:'b', text:'⚫ Grey-Out Trick: semua batang warna abu-abu kecuali 1 data target yang diberi warna neon', correct:true },
-      { id:'c', text:'🔴 Ganti semua warna dengan satu warna merah saja agar terlihat konsisten', correct:false },
-      { id:'d', text:'📉 Ubah ke Line Chart penuh warna agar data lebih dinamis', correct:false },
-    ],
-    explanation: '✅ <strong>Grey-Out Trick</strong> adalah teknik visualisasi pro karena:<br>• Warna pelangi tidak membawa informasi — otak membuang energi memproses warna yang tidak bermakna.<br>• Grey-out membuat mata <em>langsung</em> melompat ke 1 data yang dihighlight.<br>• Teknik ini dipakai di laporan Harvard Business Review, McKinsey, dan presentasi eksekutif Fortune 500.<br>• Aturan emas: gunakan warna <em>hanya</em> jika warna itu membawa informasi, bukan sekadar dekorasi.',
-  },
-  {
-    title: 'Dual Axis Disaster',
-    diag: 'Grafik menggabungkan 2 metrik berbeda (Omset jutaan vs Jumlah Transaksi ribuan) dalam 1 chart dengan 2 sumbu Y. Audiens kebingungan karena skala kiri dan kanan tidak sebanding dan otak kesulitan "menyamakan" dua satuan berbeda.',
-    chartType: 'sick-dual',
-    options: [
-      { id:'a', text:'📏 Tambahkan gridline lebih rapat agar perbedaan antar sumbu lebih jelas', correct:false },
-      { id:'b', text:'🔄 Pisahkan menjadi 2 chart berjejer — satu untuk Omset, satu untuk Transaksi', correct:true },
-      { id:'c', text:'🎨 Beri warna berbeda pada setiap data point agar lebih mudah dibedakan', correct:false },
-      { id:'d', text:'📊 Tambah sumbu Y ketiga untuk metrik ketiga agar lebih komprehensif', correct:false },
-    ],
-    explanation: '✅ <strong>2 Chart Berjejer (Small Multiples)</strong> adalah solusinya karena:<br>• Dual axis membingungkan — otak tidak bisa membandingkan skala yang berbeda secara intuitif.<br>• 2 chart kecil berjejer jauh lebih cepat dibaca dan dipahami audiens.<br>• Setiap chart punya satu pesan fokus — prinsip "one chart, one story".<br>• Pengecualian: dual axis boleh dipakai <em>hanya</em> jika 2 metrik sangat erat kaitannya (misal suhu vs curah hujan) dan audiens sudah paham konteksnya.',
-  },
-];
-
-/* ── SCORE CONFIG ── */
-const SCORE = { l1_first:15, l1_retry:8, l2_correct:15 };
-const MAX_SCORE = (SCORE.l1_first * L1_QUESTIONS.length) + (SCORE.l2_correct * L2_QUESTIONS.length);
-
-/* ── TITLE TIERS ── */
-const TIERS = [
-  { min:0,   title:'Data Chaos Generator 🤪', emoji:'🤪', bg:'#FCA5A5' },
-  { min:21,  title:'Data Novice 🌱',           emoji:'🌱', bg:'#D1D5DB' },
-  { min:41,  title:'Data Explorer 🔍',          emoji:'🔎', bg:'#93C5FD' },
-  { min:61,  title:'Data Analyst Pro 📊',       emoji:'📊', bg:'#86EFAC' },
-  { min:81,  title:'Data Wizard 🧙‍♂️',           emoji:'🏆', bg:'#FDE047' },
-];
-function getTier(s) { return [...TIERS].reverse().find(t => s >= t.min) || TIERS[0]; }
-
-/* ── SCREEN NAVIGATION ── */
-function show(id) {
+/* ──────────────────────────────────────────────────────────────────
+   SCREEN NAVIGATION
+────────────────────────────────────────────────────────────────── */
+function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0,0);
+  const el = document.getElementById(id);
+  el.classList.add('active');
+  window.scrollTo(0, 0);
 }
 
-/* ── HEADER UPDATE ── */
-function updateHeader() {
-  const t = getTier(gs.score);
-  const el = document.getElementById('hdr-score');
-  el.textContent = gs.score;
-  el.classList.remove('anim-pop'); void el.offsetWidth; el.classList.add('anim-pop');
-  document.getElementById('hdr-title').textContent = t.title;
+/* ──────────────────────────────────────────────────────────────────
+   QUIZ
+────────────────────────────────────────────────────────────────── */
+function startQuiz() {
+  state = { current: 0, answers: [], selected: null };
+  showScreen('screen-quiz');
+  renderQ(0);
 }
 
-/* ── SOUND (Web Audio) ── */
-function sfx(type) {
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = ctx.createOscillator(), g = ctx.createGain();
-    osc.connect(g); g.connect(ctx.destination);
-    if (type === 'drop') {
-      osc.frequency.value = 440; g.gain.setValueAtTime(.05,ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.12);
-      osc.start(); osc.stop(ctx.currentTime+.12);
-    } else if (type === 'correct') {
-      [523.25,659.25,783.99].forEach((f,i)=>{
-        const o=ctx.createOscillator(),g2=ctx.createGain();
-        o.connect(g2); g2.connect(ctx.destination);
-        o.frequency.value=f; g2.gain.setValueAtTime(.12,ctx.currentTime+i*.1);
-        g2.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+i*.1+.3);
-        o.start(ctx.currentTime+i*.1); o.stop(ctx.currentTime+i*.1+.3);
-      });
-    } else if (type === 'wrong') {
-      osc.frequency.setValueAtTime(220,ctx.currentTime); osc.frequency.setValueAtTime(160,ctx.currentTime+.15);
-      g.gain.setValueAtTime(.1,ctx.currentTime); g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.3);
-      osc.start(); osc.stop(ctx.currentTime+.3);
-    } else if (type === 'win') {
-      [523.25,659.25,783.99,1046.5].forEach((f,i)=>{
-        const o=ctx.createOscillator(),g2=ctx.createGain();
-        o.connect(g2); g2.connect(ctx.destination);
-        o.frequency.value=f; g2.gain.setValueAtTime(.1,ctx.currentTime+i*.13);
-        g2.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+i*.13+.35);
-        o.start(ctx.currentTime+i*.13); o.stop(ctx.currentTime+i*.13+.35);
-      });
-    }
-  } catch(e){}
-}
+function renderQ(idx) {
+  const q = QUESTIONS[idx];
+  state.selected = null;
 
-/* ── CONFETTI ── */
-function confetti() {
-  const cv = document.getElementById('confetti-canvas');
-  cv.style.display = 'block';
-  cv.width = window.innerWidth; cv.height = window.innerHeight;
-  const ctx = cv.getContext('2d');
-  const clrs = ['#7c3aed','#10b981','#f59e0b','#ef4444','#3b82f6','#ec4899','#f97316'];
-  const p = Array.from({length:90}, ()=>({
-    x: Math.random()*cv.width, y:-10,
-    w: Math.random()*12+4, h: Math.random()*6+3,
-    col: clrs[Math.floor(Math.random()*clrs.length)],
-    spd: Math.random()*3+1, ang: Math.random()*360, spin: Math.random()*5-2.5,
-  }));
-  let f=0;
-  const go=()=>{
-    ctx.clearRect(0,0,cv.width,cv.height);
-    p.forEach(pc=>{
-      pc.y+=pc.spd; pc.ang+=pc.spin; pc.x+=Math.sin(pc.ang*.05)*2;
-      ctx.save(); ctx.translate(pc.x,pc.y); ctx.rotate(pc.ang*Math.PI/180);
-      ctx.fillStyle=pc.col; ctx.fillRect(-pc.w/2,-pc.h/2,pc.w,pc.h); ctx.restore();
-    });
-    if(++f<130) requestAnimationFrame(go); else { cv.style.display='none'; }
-  };
-  go();
-}
+  // Progress update
+  const pct = Math.round((idx / QUESTIONS.length) * 100);
+  document.getElementById('q-label').textContent = `Pertanyaan ${idx + 1} dari ${QUESTIONS.length}`;
+  document.getElementById('q-pct').textContent   = `${pct}%`;
+  document.getElementById('q-prog').style.width  = `${pct}%`;
 
-/* ================================================================
-   GAME FLOW
-================================================================ */
-function startGame() {
-  gs.name = document.getElementById('inp-name').value.trim() || 'Player';
-  gs.score=0; gs.l1Score=0; gs.l2Score=0; gs.l1q=0; gs.l2q=0;
-  document.getElementById('game-header').classList.remove('hidden');
-  updateHeader();
-  show('screen-l1');
-  loadL1(0);
-}
+  // Question badge & text — animate card
+  document.getElementById('q-badge').textContent = idx + 1;
+  const card = document.getElementById('q-card');
+  card.style.animation = 'none';
+  void card.offsetWidth; // reflow to restart
+  card.style.animation = 'slideR .32s ease-out both';
+  document.getElementById('q-text').textContent = q.text;
 
-/* ================================================================
-   LEVEL 1 ENGINE
-================================================================ */
-let draggedField = null; // for HTML5 drag-drop
-
-function loadL1(idx) {
-  const q = L1_QUESTIONS[idx];
-  gs.l1done = false; gs.l1Attempt = 0; gs.selectedCard = null;
-
-  document.getElementById('l1-counter').textContent = `${idx+1}/${L1_QUESTIONS.length}`;
-  document.getElementById('l1-prog').style.width = `${(idx/L1_QUESTIONS.length)*100}%`;
-  document.getElementById('l1-question').textContent = q.q;
-  document.getElementById('l1-feedback').classList.add('hidden');
-
-  // Clear zones
-  ['filters','columns','rows','values'].forEach(z => document.getElementById('zone-'+z).innerHTML='');
-
-  // Render pool cards
-  const pool = document.getElementById('l1-pool');
-  pool.innerHTML = '';
-  q.fields.forEach(f => pool.appendChild(makeCard(f, null)));
-}
-
-function makeCard(field, fromZone) {
-  const el = document.createElement('span');
-  el.className = `field-card ${field.color}`;
-  el.dataset.fid = field.id;
-  el.dataset.zone = fromZone || '';
-  el.draggable = true;
-  el.textContent = field.label;
-
-  // HTML5 Drag
-  el.addEventListener('dragstart', e => {
-    draggedField = { field, fromZone };
-    el.classList.add('dragging');
-    e.dataTransfer.setData('text/plain', field.id);
-    sfx('drop');
-  });
-  el.addEventListener('dragend', () => { el.classList.remove('dragging'); draggedField = null; });
-
-  // Click-based (mobile)
-  el.addEventListener('click', e => {
-    e.stopPropagation();
-    if (gs.l1done) return;
-    const prev = document.querySelector('.field-card.selected');
-    if (prev && prev.dataset.fid === field.id) {
-      prev.classList.remove('selected'); gs.selectedCard = null;
-    } else {
-      if (prev) prev.classList.remove('selected');
-      el.classList.add('selected');
-      gs.selectedCard = { field, fromZone };
-      sfx('drop');
-    }
-  });
-  return el;
-}
-
-function onDragOver(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
-function onDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
-
-function onDrop(e, zone) {
-  e.preventDefault();
-  e.currentTarget.classList.remove('drag-over');
-  if (!draggedField || gs.l1done) return;
-  moveCardToZone(draggedField.field, draggedField.fromZone, zone);
-}
-
-function onZoneClick(zone) {
-  if (!gs.selectedCard || gs.l1done) return;
-  const { field, fromZone } = gs.selectedCard;
-  moveCardToZone(field, fromZone, zone);
-  gs.selectedCard = null;
-}
-
-function moveCardToZone(field, fromZone, toZone) {
-  // Remove from wherever it currently is
-  const existing = document.querySelector(`[data-fid="${field.id}"]`);
-  if (existing) existing.remove();
-
-  // Place in new zone (or pool if toZone is null)
-  const q = L1_QUESTIONS[gs.l1q];
-  const fieldData = q.fields.find(f => f.id === field.id);
-  if (!fieldData) return;
-
-  const card = makeCard(fieldData, toZone);
-  document.getElementById('zone-' + toZone).appendChild(card);
-  sfx('drop');
-}
-
-function resetL1() { loadL1(gs.l1q); }
-
-function checkL1() {
-  if (gs.l1done) return;
-  const q = L1_QUESTIONS[gs.l1q];
-
-  const getZone = z => [...document.getElementById('zone-'+z).querySelectorAll('[data-fid]')].map(e=>e.dataset.fid);
-  const player = { filters:getZone('filters'), columns:getZone('columns'), rows:getZone('rows'), values:getZone('values') };
-
-  const sameSet = (a,b) => a.length===b.length && [...a].sort().join()===([...b].sort().join());
-  const correct = sameSet(player.filters,q.answer.filters) && sameSet(player.columns,q.answer.columns) &&
-                  sameSet(player.rows,q.answer.rows) && sameSet(player.values,q.answer.values);
-
-  gs.l1Attempt++;
-  const fb = document.getElementById('l1-feedback');
-  const content = document.getElementById('l1-fb-content');
-  const nextBtn = document.getElementById('l1-fb-next');
-
-  if (correct) {
-    const pts = gs.l1Attempt === 1 ? SCORE.l1_first : SCORE.l1_retry;
-    gs.score += pts; gs.l1Score += pts; gs.l1done = true;
-    updateHeader(); sfx('correct'); confetti();
-
-    fb.className = 'nb-card rounded-xl p-5 anim-bounce-in bg-green-100';
-    content.innerHTML = `
-      <div class="flex items-center gap-3 mb-3">
-        <span class="text-4xl anim-bounce-in">🎉</span>
-        <div>
-          <div class="font-black text-green-800 text-xl">Bener banget! +${pts} poin!</div>
-          <div class="text-sm text-green-700">${gs.l1Attempt===1?'🔥 Perfect — first try!':'Nice! Sekarang paham kan?'}</div>
-        </div>
-      </div>
-      <div class="bg-white rounded-lg p-4 border-l-4 border-green-400 text-sm text-gray-700">${q.tip}</div>`;
-    nextBtn.classList.remove('hidden');
-  } else {
-    sfx('wrong');
-    // Build hints
-    const fieldName = id => q.fields.find(f=>f.id===id)?.label || id;
-    const zoneHint = (zone, ans) => ans.length===0
-      ? `<strong>${zone.toUpperCase()}</strong> harus kosong`
-      : `<strong>${zone.toUpperCase()}</strong> harusnya: ${ans.map(fieldName).join(', ')}`;
-
-    let hints = [];
-    if (!sameSet(player.rows,    q.answer.rows))    hints.push(zoneHint('rows',    q.answer.rows));
-    if (!sameSet(player.columns, q.answer.columns)) hints.push(zoneHint('columns', q.answer.columns));
-    if (!sameSet(player.values,  q.answer.values))  hints.push(zoneHint('values',  q.answer.values));
-    if (!sameSet(player.filters, q.answer.filters)) hints.push(zoneHint('filters', q.answer.filters));
-
-    fb.className = 'nb-card rounded-xl p-5 anim-shake bg-red-100';
-    content.innerHTML = `
-      <div class="flex items-center gap-3 mb-3">
-        <span class="text-4xl">😅</span>
-        <div>
-          <div class="font-black text-red-800 text-xl">Belum tepat!</div>
-          <div class="text-sm text-red-700">Coba lagi! ${gs.l1Attempt===1?'Masih ada poin '+SCORE.l1_retry+' kalau bener sekarang.':''}</div>
-        </div>
-      </div>
-      <div class="bg-white rounded-lg p-4 border-l-4 border-red-400">
-        <div class="font-black text-red-800 text-xs mb-2">🔍 Petunjuk:</div>
-        ${hints.map(h=>`<p class="text-sm text-gray-700 mb-1">• ${h}</p>`).join('')}
-      </div>
-      <div class="flex gap-2 mt-4">
-        <button class="nb-btn bg-orange-400 text-white font-black px-4 py-2 rounded-xl flex-1 text-sm" onclick="hideFb();resetL1()">🔄 Coba Lagi</button>
-        ${gs.l1Attempt>=2?'<button class="nb-btn bg-gray-200 font-bold px-4 py-2 rounded-xl text-sm" onclick="showL1Answer()">Lihat Jawaban</button>':''}
-      </div>`;
-    nextBtn.classList.add('hidden');
-  }
-  fb.classList.remove('hidden');
-}
-
-function hideFb() { document.getElementById('l1-feedback').classList.add('hidden'); }
-
-function showL1Answer() {
-  const q = L1_QUESTIONS[gs.l1q];
-  gs.l1done = true;
-  // Clear zones
-  ['filters','columns','rows','values'].forEach(z => document.getElementById('zone-'+z).innerHTML='');
-  // Remove remaining pool cards
-  document.getElementById('l1-pool').innerHTML='';
-  // Place correct answer
-  Object.entries(q.answer).forEach(([zone, ids]) => {
-    ids.forEach(id => {
-      const field = q.fields.find(f=>f.id===id);
-      if(field) document.getElementById('zone-'+zone).appendChild(makeCard(field, zone));
-    });
-  });
-  const fb = document.getElementById('l1-feedback');
-  fb.className = 'nb-card rounded-xl p-5 anim-slide-up bg-blue-100';
-  document.getElementById('l1-fb-content').innerHTML = `
-    <div class="flex items-center gap-3 mb-3">
-      <span class="text-3xl">📖</span>
-      <div class="font-black text-blue-800 text-lg">Ini jawaban yang benar!</div>
-    </div>
-    <div class="bg-white rounded-lg p-4 border-l-4 border-blue-400 text-sm text-gray-700">${q.tip}</div>`;
-  document.getElementById('l1-fb-next').classList.remove('hidden');
-}
-
-function nextL1() {
-  gs.l1q++;
-  if (gs.l1q >= L1_QUESTIONS.length) {
-    document.getElementById('trans-score').textContent = `+${gs.l1Score} poin`;
-    show('screen-trans'); sfx('win');
-  } else {
-    loadL1(gs.l1q);
-  }
-}
-
-/* ================================================================
-   LEVEL 2 ENGINE
-================================================================ */
-let chartInst = null;
-
-function startL2() { show('screen-l2'); loadL2(0); }
-
-function loadL2(idx) {
-  const q = L2_QUESTIONS[idx];
-  gs.l2done = false;
-
-  document.getElementById('l2-counter').textContent = `${idx+1}/${L2_QUESTIONS.length}`;
-  document.getElementById('l2-prog').style.width = `${(idx/L2_QUESTIONS.length)*100}%`;
-  document.getElementById('l2-tag').textContent = q.title;
-  document.getElementById('l2-diag').textContent = q.diag;
-  document.getElementById('l2-explain').classList.add('hidden');
-
-  // Render sick chart
-  renderSickChart(q.chartType);
-
-  // Render options
-  const opts = document.getElementById('l2-opts');
-  opts.innerHTML = '';
-  q.options.forEach(o => {
+  // Render 5 Likert tiles
+  const optsEl = document.getElementById('q-opts');
+  optsEl.innerHTML = '';
+  LIKERT.forEach(opt => {
     const btn = document.createElement('button');
-    btn.className = 'opt-btn nb-btn bg-white font-semibold px-4 py-4 rounded-xl w-full';
-    btn.dataset.oid = o.id;
-    btn.textContent = o.text;
-    btn.onclick = () => checkL2(o, btn);
-    opts.appendChild(btn);
+    btn.className = 'ans-tile';
+    btn.innerHTML = `
+      <span class="tile-emoji">${opt.emoji}</span>
+      <span class="tile-num">${opt.val}</span>
+    `;
+    btn.onclick = () => pickAnswer(opt.val, btn);
+    optsEl.appendChild(btn);
   });
+
+  // Hide next button
+  document.getElementById('btn-next').classList.add('hidden');
 }
 
-function renderSickChart(type) {
-  const box = document.getElementById('l2-chart-box');
-  if (chartInst) { chartInst.destroy(); chartInst = null; }
-  box.innerHTML = '';
+function pickAnswer(val, tileEl) {
+  // Deselect all tiles
+  document.querySelectorAll('.ans-tile').forEach(t => t.classList.remove('picked'));
+  // Select this tile
+  tileEl.classList.add('picked');
+  state.selected = val;
+  // Show next button
+  document.getElementById('btn-next').classList.remove('hidden');
+}
 
-  const cv = document.createElement('canvas');
-  // Responsive canvas sizing
-  const w = Math.min(box.parentElement.offsetWidth - 40, 500);
-  cv.width = w; cv.height = 260;
-  box.appendChild(cv);
+function nextQuestion() {
+  if (state.selected === null) return;
+  state.answers.push(state.selected);
+  state.current++;
 
-  if (type === 'sick-pie') {
-    chartInst = new Chart(cv, {
-      type:'pie',
-      data:{
-        labels:['Espresso','Latte','Cold Brew','Matcha','Americano','Cappuccino','Mocha','Frappuccino','Affogato','Vietnamese','Macchiato','Pour Over'],
-        datasets:[{
-          data:[15,12,11,10,9,9,8,7,6,5,5,3],
-          backgroundColor:['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF','#FF9F40','#c084fc','#67e8f9','#fda4af','#6ee7b7','#fcd34d','#a78bfa'],
-          borderWidth:2, borderColor:'#fff',
-          offset:[18,0,0,0,0,0,0,0,0,0,0,0],
-        }]
-      },
-      options:{
-        responsive:false,
-        plugins:{
-          title:{ display:true, text:'Penjualan Per Produk (%) 😵', font:{size:13,weight:'bold'} },
-          legend:{ position:'right', labels:{font:{size:8}, boxWidth:10, padding:5} }
-        }
-      }
-    });
-  } else if (type === 'sick-rainbow') {
-    chartInst = new Chart(cv, {
-      type:'bar',
-      data:{
-        labels:['Bandung','Jakarta','Surabaya','Yogya','Medan','Bali'],
-        datasets:[{
-          label:'Omset (juta)',
-          data:[320,480,290,210,350,400],
-          backgroundColor:['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF','#FF9F40'],
-          borderColor:['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF','#FF9F40'],
-          borderWidth:2,
-        }]
-      },
-      options:{
-        responsive:false,
-        plugins:{
-          title:{ display:true, text:'Omset Per Cabang — Rainbow Edition 🌈🤢', font:{size:13,weight:'bold'} },
-          legend:{ display:false }
-        },
-        scales:{ y:{ beginAtZero:true, title:{display:true, text:'Omset (Juta Rp)'} } }
-      }
-    });
-  } else if (type === 'sick-dual') {
-    chartInst = new Chart(cv, {
-      type:'bar',
-      data:{
-        labels:['Jan','Feb','Mar','Apr','Mei','Jun'],
-        datasets:[
-          {
-            type:'bar', label:'Omset (juta)', data:[250,280,300,270,310,340],
-            backgroundColor:'#7c3aed', yAxisID:'y',
-          },
-          {
-            type:'line', label:'Jml Transaksi', data:[1200,1350,1100,1400,1250,1600],
-            borderColor:'#ef4444', backgroundColor:'transparent', yAxisID:'y1',
-            tension:.4, borderWidth:3,
-          }
-        ]
-      },
-      options:{
-        responsive:false,
-        plugins:{
-          title:{ display:true, text:'Omset vs Transaksi — Dual Axis 😵‍💫', font:{size:13,weight:'bold'} }
-        },
-        scales:{
-          y:{ type:'linear', position:'left', title:{display:true,text:'Omset (Juta)'} },
-          y1:{ type:'linear', position:'right', title:{display:true,text:'Jml Transaksi'}, grid:{drawOnChartArea:false} },
-        }
-      }
-    });
+  if (state.current >= QUESTIONS.length) {
+    showResult();
+  } else {
+    renderQ(state.current);
   }
 }
 
-function checkL2(opt, btn) {
-  if (gs.l2done) return;
-  gs.l2done = true;
+/* ──────────────────────────────────────────────────────────────────
+   RESULT
+────────────────────────────────────────────────────────────────── */
+function showResult() {
+  const total = calcScore(state.answers);
+  if (total === null) return;
+  const tier = getTier(total);
 
-  const q = L2_QUESTIONS[gs.l2q];
-  // Mark buttons
-  document.querySelectorAll('#l2-opts button').forEach(b => {
-    b.disabled = true;
-    const od = b.dataset.oid;
-    if (q.options.find(o=>o.id===od)?.correct) b.classList.add('correct');
-    else if (b === btn && !opt.correct) b.classList.add('wrong');
-  });
+  // Score card
+  document.getElementById('res-card').style.backgroundColor  = tier.cardBg;
+  document.getElementById('score-ring').style.backgroundColor = tier.ringBg;
+  document.getElementById('score-num').textContent = total;
+  document.getElementById('res-emoji').textContent    = tier.emoji;
+  document.getElementById('res-tier').textContent     = tier.tier;
+  document.getElementById('res-category').textContent = tier.category;
 
-  const expEl = document.getElementById('l2-explain');
-  const cont = document.getElementById('l2-exp-content');
+  // Score pointer (0–40 → 0–100%)
+  const pct = (total / 40) * 100;
+  // Small delay so the animation plays after screen transition
+  setTimeout(() => {
+    document.getElementById('score-pointer').style.left = `calc(${pct}% - 6px)`;
+  }, 400);
 
-  if (opt.correct) {
-    gs.score += SCORE.l2_correct; gs.l2Score += SCORE.l2_correct;
-    updateHeader(); sfx('correct'); confetti();
-    expEl.className = 'nb-card rounded-xl p-5 anim-bounce-in bg-green-100';
-    cont.innerHTML = `
-      <div class="flex items-center gap-3 mb-3">
-        <span class="text-4xl">🎉</span>
-        <div class="font-black text-green-800 text-xl">Diagnosis tepat! +${SCORE.l2_correct} poin!</div>
-      </div>
-      <div class="bg-white rounded-lg p-4 border-l-4 border-green-400">
-        <div class="font-black text-green-800 text-xs mb-2">🩺 Kenapa ini benar?</div>
-        <p class="text-gray-700 text-sm">${q.explanation}</p>
-      </div>`;
-  } else {
-    sfx('wrong');
-    expEl.className = 'nb-card rounded-xl p-5 anim-shake bg-red-100';
-    cont.innerHTML = `
-      <div class="flex items-center gap-3 mb-3">
-        <span class="text-4xl">😬</span>
+  // Meme section
+  document.getElementById('meme-top').textContent    = tier.memeTop;
+  document.getElementById('meme-body').innerHTML     = tier.memeBody;
+  document.getElementById('meme-bottom').textContent = tier.memeBottom;
+  document.getElementById('screen-result').querySelector('.meme-frame').style.backgroundColor = tier.cardBg;
+
+  // Description — support \n as paragraph breaks
+  document.getElementById('res-desc').innerHTML = tier.desc
+    .replace(/\n/g, '<br><br>');
+
+  // Advice
+  document.getElementById('advice-wrap').style.backgroundColor = tier.adviceBg;
+  const adviceEl = document.getElementById('advice-list');
+  adviceEl.innerHTML = '';
+  tier.advice.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'advice-item nb-sm bg-white rounded-xl p-4';
+    div.innerHTML = `
+      <div class="flex items-start gap-3">
+        <span class="text-2xl flex-shrink-0 mt-0.5">${item.icon}</span>
         <div>
-          <div class="font-black text-red-800 text-xl">Belum tepat...</div>
-          <div class="text-sm text-red-700">Tapi sekarang kamu tahu! Ini penjelasannya:</div>
+          <div class="font-black text-gray-900 text-sm mb-1">${item.title}</div>
+          <div class="text-gray-700 text-xs leading-relaxed">${item.body.replace(/\n/g,'<br>')}</div>
         </div>
-      </div>
-      <div class="bg-white rounded-lg p-4 border-l-4 border-red-400">
-        <p class="text-gray-700 text-sm">${q.explanation}</p>
       </div>`;
-  }
-  expEl.classList.remove('hidden');
+    adviceEl.appendChild(div);
+  });
+
+  showScreen('screen-result');
 }
 
-function nextL2() {
-  gs.l2q++;
-  if (gs.l2q >= L2_QUESTIONS.length) showEnd();
-  else loadL2(gs.l2q);
+/* ──────────────────────────────────────────────────────────────────
+   ACTIONS
+────────────────────────────────────────────────────────────────── */
+function retakeQuiz() { startQuiz(); }
+
+function copyResult() {
+  const total = calcScore(state.answers);
+  if (total === null) return;
+  const tier = getTier(total);
+
+  const badge =
+    total <= 13 ? '✨ Chill mode: ON. Vibe check passed!' :
+    total <= 26 ? '⚠️ Yellow flag — perlu self-care intentional'
+               : '🚨 System overload — butuh support sekarang';
+
+  const text =
+`🧘‍♂️ Stress Level Check: Gen Z Edition ⚡
+Powered by PSS-10 (Cohen et al., 1983)
+
+📊 Skor gue: ${total}/40
+🏷️ Status: ${tier.tier} — ${tier.category}
+${badge}
+
+—
+Cek level stres kamu juga! (Quiz gratis, berbasis sains)`;
+
+  const doCopy = txt => {
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(txt)
+        .then(() => alert('✅ Berhasil disalin! Paste ke WA, Instagram caption, atau Slack kamu 😄'))
+        .catch(fallback);
+    } else { fallback(); }
+  };
+
+  const fallback = () => {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    try { document.execCommand('copy'); alert('✅ Disalin!'); }
+    catch(e) { alert('Salin manual:\n\n' + text); }
+    document.body.removeChild(ta);
+  };
+
+  doCopy(text);
 }
 
-/* ================================================================
-   END SCREEN
-================================================================ */
-function showEnd() {
-  show('screen-end');
-  sfx('win'); confetti();
-
-  const tier = getTier(gs.score);
-  const pct = gs.score / MAX_SCORE;
-  const stars = pct >= .9 ? '⭐⭐⭐' : pct >= .6 ? '⭐⭐' : '⭐';
-
-  document.getElementById('end-player').textContent = gs.name !== 'Player' ? `${gs.name}'s result` : '';
-  document.getElementById('end-title').textContent = tier.title;
-  document.getElementById('end-trophy').textContent = tier.emoji;
-  document.getElementById('end-stars').textContent = stars;
-  document.getElementById('end-l1').textContent = gs.l1Score;
-  document.getElementById('end-l2').textContent = gs.l2Score;
-  document.getElementById('end-total').textContent = gs.score;
-  document.getElementById('end-result-card').style.backgroundColor = tier.bg;
-}
-
-function restartGame() {
-  gs = { name:gs.name, score:0, l1Score:0, l2Score:0, l1q:0, l2q:0, l1done:false, l2done:false, selectedCard:null, l1Attempt:0 };
-  updateHeader();
-  show('screen-l1');
-  loadL1(0);
-}
-
-function shareScore() {
-  const tier = getTier(gs.score);
-  const stars = gs.score/MAX_SCORE >= .9 ? '⭐⭐⭐' : gs.score/MAX_SCORE >= .6 ? '⭐⭐' : '⭐';
-  const text = `🎮 Data Master: Pivot & Viz Edition\n${stars} ${tier.title}\n📊 Skor: ${gs.score}/${MAX_SCORE} poin\n\nYuk coba juga! (game edukasi data analytics gratis)`;
-  if (navigator.share) {
-    navigator.share({ title:'Data Master Game', text });
-  } else {
-    navigator.clipboard.writeText(text).then(() => alert('Skor disalin ke clipboard! Paste ke Slack/WA kamu 😄'));
-  }
-}
-
-/* ── Global drag cleanup ── */
-document.addEventListener('dragover', e => {
-  if (!e.target.closest('.drop-zone')) document.querySelectorAll('.drop-zone').forEach(z=>z.classList.remove('drag-over'));
-});
 </script>
 </body>
 </html>
