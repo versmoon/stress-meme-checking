@@ -11,82 +11,76 @@
     html, body { height:100%; overflow:hidden; background:#faf9ff; }
 
     #app { position:relative; width:100vw; height:100vh; overflow:hidden; }
-    .screen {
-      position:absolute; inset:0;
-      overflow-y:auto; -webkit-overflow-scrolling:touch;
-      display:none; background:#faf9ff;
-    }
+    .screen { position:absolute; inset:0; overflow-y:auto; -webkit-overflow-scrolling:touch; display:none; background:#faf9ff; }
     .screen.active { display:block; }
 
     @keyframes slideInR { from{transform:translateX(100%)} to{transform:translateX(0)} }
-    @keyframes slideInQ { from{transform:translateX(48px);opacity:0} to{transform:translateX(0);opacity:1} }
-    @keyframes fadeUp   { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
-    @keyframes bounceIn { 0%{transform:scale(.4);opacity:0} 65%{transform:scale(1.06)} 100%{transform:scale(1);opacity:1} }
+    @keyframes slideInQ { from{transform:translateX(40px);opacity:0} to{transform:translateX(0);opacity:1} }
+    @keyframes fadeUp   { from{transform:translateY(16px);opacity:0} to{transform:translateY(0);opacity:1} }
+    @keyframes bounceIn { 0%{transform:scale(.4);opacity:0} 65%{transform:scale(1.05)} 100%{transform:scale(1);opacity:1} }
     @keyframes floatY   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
-    @keyframes popIn    { 0%{transform:scale(0);opacity:0} 75%{transform:scale(1.08)} 100%{transform:scale(1);opacity:1} }
+    @keyframes popIn    { 0%{transform:scale(0);opacity:0} 75%{transform:scale(1.07)} 100%{transform:scale(1);opacity:1} }
 
     .anim-bounce { animation:bounceIn .5s cubic-bezier(.175,.885,.32,1.275) both; }
     .anim-pop    { animation:popIn .5s cubic-bezier(.175,.885,.32,1.275) both; }
     .anim-float  { animation:floatY 3.5s ease-in-out infinite; }
-    .anim-up     { animation:fadeUp .4s ease-out both; }
-    .d1{animation-delay:.05s} .d2{animation-delay:.12s} .d3{animation-delay:.19s}
-    .d4{animation-delay:.26s} .d5{animation-delay:.33s} .d6{animation-delay:.40s}
+    .anim-up     { animation:fadeUp .35s ease-out both; }
+    .d1{animation-delay:.06s} .d2{animation-delay:.13s} .d3{animation-delay:.20s}
+    .d4{animation-delay:.27s} .d5{animation-delay:.34s} .d6{animation-delay:.41s}
 
-    .grad-bg   { background:linear-gradient(135deg,#7c3aed,#ec4899); }
+    .grad-bg  { background:linear-gradient(135deg,#7c3aed,#ec4899); }
     .grad-text {
       background:linear-gradient(135deg,#7c3aed,#ec4899);
       -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
     }
 
-    .card    { background:#fff; border-radius:20px; box-shadow:0 4px 24px rgba(124,58,237,.09); }
-    .card-sm { background:#fff; border-radius:14px; box-shadow:0 2px 12px rgba(0,0,0,.06); border:1.5px solid #f0eeff; }
+    .card    { background:#fff; border-radius:18px; box-shadow:0 4px 20px rgba(124,58,237,.09); }
+    .card-sm { background:#fff; border-radius:14px; box-shadow:0 2px 10px rgba(0,0,0,.05); border:1.5px solid #f0eeff; }
 
     .btn-main {
       background:linear-gradient(135deg,#7c3aed,#ec4899); color:#fff; border:none;
-      cursor:pointer; font-family:'Poppins',sans-serif; font-weight:700;
-      border-radius:14px; padding:14px 24px; font-size:.95rem;
-      transition:all .2s; box-shadow:0 6px 20px rgba(124,58,237,.3);
+      cursor:pointer; font-weight:700; border-radius:13px; padding:13px 22px;
+      font-size:.93rem; transition:all .2s; box-shadow:0 5px 18px rgba(124,58,237,.28);
       display:inline-flex; align-items:center; justify-content:center; gap:6px;
     }
-    .btn-main:hover  { transform:translateY(-2px); box-shadow:0 10px 28px rgba(124,58,237,.4); }
+    .btn-main:hover  { transform:translateY(-2px); box-shadow:0 9px 26px rgba(124,58,237,.38); }
     .btn-ghost {
-      background:#fff; cursor:pointer; font-family:'Poppins',sans-serif;
-      font-weight:700; border-radius:14px; padding:14px 20px;
-      font-size:.95rem; transition:all .2s; border:2px solid #7c3aed; color:#7c3aed;
+      background:#fff; cursor:pointer; font-weight:700; border-radius:13px;
+      padding:13px 20px; font-size:.93rem; transition:all .2s;
+      border:2px solid #7c3aed; color:#7c3aed;
     }
     .btn-ghost:hover { background:#f5f3ff; }
 
     .ans-opt {
       background:#fff; border:2px solid #e9e5ff; border-radius:12px;
-      padding:12px 15px; cursor:pointer; transition:all .15s;
-      display:flex; align-items:center; gap:10px; width:100%;
-      font-family:'Poppins',sans-serif; text-align:left;
+      padding:11px 14px; cursor:pointer; transition:all .15s;
+      display:flex; align-items:center; gap:10px; width:100%; text-align:left;
     }
     .ans-opt:hover  { border-color:#a78bfa; background:#faf7ff; transform:translateX(3px); }
     .ans-opt.chosen {
       border-color:#7c3aed; background:linear-gradient(135deg,#ede9fe,#fce7f3);
-      transform:translateX(5px); box-shadow:0 3px 14px rgba(124,58,237,.15);
+      transform:translateX(5px); box-shadow:0 3px 12px rgba(124,58,237,.14);
     }
     .ans-dot {
-      width:28px; height:28px; border-radius:50%; border:2px solid #d1d5db;
+      width:27px; height:27px; border-radius:50%; border:2px solid #d1d5db;
       display:flex; align-items:center; justify-content:center; flex-shrink:0;
-      font-weight:700; font-size:.75rem; color:#9ca3af; transition:all .15s;
+      font-weight:700; font-size:.73rem; color:#9ca3af; transition:all .15s;
     }
     .ans-opt.chosen .ans-dot { background:linear-gradient(135deg,#7c3aed,#ec4899); border-color:transparent; color:#fff; }
 
     .prog-fill { background:linear-gradient(90deg,#7c3aed,#ec4899,#3b82f6); transition:width .4s ease; border-radius:999px; height:100%; }
 
-    .ring-low  { background:linear-gradient(135deg,#d1fae5,#a7f3d0); box-shadow:0 6px 20px rgba(16,185,129,.2); }
-    .ring-mid  { background:linear-gradient(135deg,#fef3c7,#fde68a); box-shadow:0 6px 20px rgba(245,158,11,.2); }
-    .ring-high { background:linear-gradient(135deg,#fee2e2,#fecaca); box-shadow:0 6px 20px rgba(239,68,68,.2); }
+    .ring-low  { background:linear-gradient(135deg,#d1fae5,#a7f3d0); box-shadow:0 5px 18px rgba(16,185,129,.2); }
+    .ring-mid  { background:linear-gradient(135deg,#fef3c7,#fde68a); box-shadow:0 5px 18px rgba(245,158,11,.2); }
+    .ring-high { background:linear-gradient(135deg,#fee2e2,#fecaca); box-shadow:0 5px 18px rgba(239,68,68,.2); }
 
-    .pill { padding:3px 10px; border-radius:999px; font-size:.68rem; font-weight:600; display:inline-flex; align-items:center; gap:3px; }
+    .pill { padding:3px 10px; border-radius:999px; font-size:.67rem; font-weight:600; display:inline-flex; align-items:center; gap:3px; }
 
     .meme-ph {
       background:linear-gradient(135deg,#f5f3ff,#fce7f3);
-      border:2px dashed #c4b5fd; border-radius:16px;
-      min-height:190px; display:flex; flex-direction:column;
-      align-items:center; justify-content:center; gap:8px; padding:20px; text-align:center;
+      border:2px dashed #c4b5fd; border-radius:14px;
+      flex:1; display:flex; flex-direction:column;
+      align-items:center; justify-content:center; gap:8px; padding:16px; text-align:center;
     }
 
     #score-ptr { transition:left .75s cubic-bezier(.4,0,.2,1); }
@@ -94,8 +88,8 @@
     .screen::-webkit-scrollbar { width:3px; }
     .screen::-webkit-scrollbar-thumb { background:#c4b5fd; border-radius:2px; }
 
-    .example-box {
-      border-radius:10px; padding:10px 12px; margin-top:10px;
+    .coba-box {
+      border-radius:9px; padding:9px 11px; margin-top:9px;
       background:#f5f3ff; border-left:3px solid #7c3aed;
     }
   </style>
@@ -103,15 +97,15 @@
 <body>
 <div id="app">
 
-<!-- =========================================================
+<!-- ================================================================
      INTRO
-========================================================= -->
+================================================================ -->
 <div id="s-intro" class="screen active">
-  <div class="max-w-md mx-auto px-5 py-10 flex flex-col gap-5">
+  <div class="max-w-md mx-auto px-5 py-8 flex flex-col gap-4">
 
     <div class="text-center">
-      <div class="anim-float text-7xl mb-4 select-none">🧘‍♂️</div>
-      <h1 class="font-black leading-tight mb-3" style="font-size:clamp(2rem,6vw,2.75rem);">
+      <div class="anim-float text-6xl mb-3 select-none">🧘‍♂️</div>
+      <h1 class="font-black leading-tight mb-2" style="font-size:clamp(1.9rem,6vw,2.6rem);">
         <span class="grad-text">Stress Level</span><br>
         <span style="color:#1f2937;">Check</span>
       </h1>
@@ -121,10 +115,10 @@
       </div>
     </div>
 
-    <div class="card p-5">
+    <div class="card p-4">
       <p class="font-bold text-gray-800 text-sm mb-2">Ini bukan quiz random biasa ✨</p>
-      <p class="text-gray-500 text-sm leading-relaxed mb-4">
-        Pakai <strong class="text-gray-800">Perceived Stress Scale (PSS-10)</strong> — alat ukur stres yang divalidasi secara klinis dan digunakan di seluruh dunia. Hasilnya <em>personal</em> berdasarkan jawabanmu.
+      <p class="text-gray-500 text-sm leading-relaxed mb-3">
+        Pakai <strong class="text-gray-800">Perceived Stress Scale (PSS-10)</strong> — alat ukur stres yang divalidasi secara klinis. Hasilnya personal berdasarkan jawabanmu.
       </p>
       <div class="flex flex-wrap gap-2">
         <span class="pill" style="background:#f5f3ff;color:#6d28d9;border:1.5px solid #ddd6fe;">⏱️ ~3 menit</span>
@@ -133,157 +127,141 @@
       </div>
     </div>
 
-    <div class="card p-5">
+    <div class="card p-4">
       <p class="font-bold text-gray-800 text-sm mb-3">Cara mainnya:</p>
-      <div class="space-y-3">
+      <div class="flex flex-col gap-2.5">
         <div class="flex items-start gap-3">
           <span class="w-6 h-6 rounded-full grad-bg flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-0.5">1</span>
           <p class="text-gray-500 text-sm">Jawab 10 pertanyaan tentang perasaanmu <strong class="text-gray-700">sebulan terakhir</strong></p>
         </div>
         <div class="flex items-start gap-3">
           <span class="w-6 h-6 rounded-full grad-bg flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-0.5">2</span>
-          <p class="text-gray-500 text-sm">Beberapa soal berlabel <span class="font-semibold" style="color:#059669;">💚 positif</span> — jawaban "Sering" di sana = <em>bagus!</em></p>
+          <p class="text-gray-500 text-sm">Pilih skala dari <em>Gak Pernah</em> sampai <em>Sering Banget</em></p>
         </div>
         <div class="flex items-start gap-3">
           <span class="w-6 h-6 rounded-full grad-bg flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-0.5">3</span>
-          <p class="text-gray-500 text-sm">Dapat saran anti-stres yang <strong class="text-gray-700">dipersonalisasi</strong> berdasarkan jawabanmu!</p>
+          <p class="text-gray-500 text-sm">Dapat saran anti-stres yang <strong class="text-gray-700">disesuaikan</strong> dengan jawabanmu</p>
         </div>
       </div>
     </div>
 
-    <div class="rounded-2xl p-4" style="background:#fffbeb;border:1.5px solid #fde68a;">
+    <div class="rounded-2xl p-3" style="background:#fffbeb;border:1.5px solid #fde68a;">
       <p class="text-amber-700 text-xs leading-relaxed">
-        ⚠️ <strong>Disclaimer:</strong> Hasil ini bersifat informatif, bukan diagnosis medis. Kalau kamu merasa sangat kewalahan, silakan hubungi profesional 💛
+        ⚠️ Hasil ini bersifat informatif, bukan diagnosis medis. Jika merasa sangat kewalahan, hubungi profesional kesehatan mental ya 💛
       </p>
     </div>
 
     <button class="btn-main w-full" onclick="startQuiz()">🚀 Mulai Kuis!</button>
-    <p class="text-center text-gray-400 text-xs">Jawab sejujurnya — gak ada yang nilaiin di sini 🤝</p>
+    <p class="text-center text-gray-400 text-xs pb-4">Jawab sejujurnya — gak ada yang nilaiin di sini 🤝</p>
   </div>
 </div>
 
-<!-- =========================================================
+<!-- ================================================================
      QUIZ
-========================================================= -->
+================================================================ -->
 <div id="s-quiz" class="screen">
-  <div class="max-w-lg mx-auto px-4 py-6">
+  <div class="max-w-lg mx-auto px-4 py-5">
 
     <div class="flex items-center justify-between mb-2">
       <button onclick="go('s-intro')" class="text-gray-400 text-sm font-semibold hover:text-purple-500 transition-colors">← Keluar</button>
       <span id="q-num" class="text-gray-400 font-semibold text-sm">1 / 10</span>
       <span id="q-pct" class="font-bold text-sm grad-text">0%</span>
     </div>
-    <div class="rounded-full mb-5" style="background:#e9e5ff;height:9px;">
+    <div class="rounded-full mb-4" style="background:#e9e5ff;height:8px;">
       <div id="q-prog" class="prog-fill" style="width:0%;"></div>
     </div>
 
     <div class="flex justify-center mb-3">
-      <span class="pill" style="background:#f5f3ff;color:#6d28d9;border:1.5px solid #ddd6fe;font-size:.72rem;">
+      <span class="pill" style="background:#f5f3ff;color:#6d28d9;border:1.5px solid #ddd6fe;font-size:.7rem;">
         📅 Dalam sebulan terakhir, seberapa sering...
-      </span>
-    </div>
-
-    <!-- Positive badge (hidden by default) -->
-    <div id="q-positive" class="justify-center mb-2 hidden" style="display:none;">
-      <span class="pill" style="background:#ecfdf5;color:#059669;border:1.5px solid #a7f3d0;font-size:.72rem;">
-        💚 Pertanyaan positif — jawaban "Sering Banget" di sini = stres rendah ✅
       </span>
     </div>
 
     <div id="q-card" class="card p-5 mb-4">
       <div class="flex items-start gap-3">
         <span id="q-badge" class="w-8 h-8 rounded-full grad-bg flex items-center justify-center text-white font-bold text-sm flex-shrink-0 mt-0.5"></span>
-        <p id="q-text" class="font-semibold text-gray-800 leading-relaxed" style="font-size:clamp(.88rem,2.5vw,.97rem);"></p>
+        <p id="q-text" class="font-semibold text-gray-800 leading-relaxed" style="font-size:clamp(.87rem,2.5vw,.97rem);"></p>
       </div>
     </div>
 
-    <div id="q-opts" class="space-y-2.5 mb-5"></div>
+    <div id="q-opts" class="flex flex-col gap-2 mb-4"></div>
     <button id="btn-next" class="btn-main w-full hidden" onclick="nextQ()">Selanjutnya ➡️</button>
   </div>
 </div>
 
-<!-- =========================================================
+<!-- ================================================================
      RESULT
-========================================================= -->
+================================================================ -->
 <div id="s-result" class="screen">
-  <div class="max-w-3xl mx-auto px-4 py-8 pb-16">
+  <div class="max-w-5xl mx-auto px-4 py-6 pb-16">
 
-    <!-- ① Score card — centered, compact -->
-    <div class="max-w-sm mx-auto mb-6 anim-bounce">
-      <div class="card p-5">
-        <p class="text-center text-gray-400 font-semibold text-xs uppercase tracking-wider mb-4">Hasil PSS-10 kamu 👇</p>
+    <!-- ① 3-col: Score | Meme | Kondisi -->
+    <div class="grid md:grid-cols-3 gap-4 mb-5 items-stretch">
 
-        <div class="flex items-center gap-4 mb-5">
-          <div id="res-ring" class="anim-pop flex-shrink-0" style="width:110px;height:110px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-            <div id="res-score" class="font-black leading-none" style="font-size:2.6rem;color:#1f2937;"></div>
-            <div class="text-gray-400 font-medium" style="font-size:.6rem;">dari 40</div>
+      <!-- Skor -->
+      <div class="card p-4 flex flex-col anim-bounce">
+        <p class="text-gray-400 font-semibold text-xs uppercase tracking-wider mb-3 text-center">Hasil PSS-10</p>
+        <div class="flex items-center gap-3 mb-4">
+          <div id="res-ring" class="anim-pop flex-shrink-0" style="width:90px;height:90px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+            <div id="res-score" class="font-black leading-none" style="font-size:2.2rem;color:#1f2937;"></div>
+            <div class="text-gray-400 font-medium" style="font-size:.58rem;">dari 40</div>
           </div>
           <div>
-            <div id="res-emoji" class="mb-1" style="font-size:2.2rem;"></div>
+            <div id="res-emoji" style="font-size:1.9rem;margin-bottom:3px;"></div>
             <div id="res-tier" class="font-black text-gray-400 text-xs uppercase tracking-wider"></div>
-            <div id="res-cat"  class="font-black text-gray-900 leading-tight" style="font-size:.95rem;max-width:170px;"></div>
-            <div id="res-sub"  class="font-medium text-gray-400 text-xs mt-1 italic"></div>
+            <div id="res-cat"  class="font-black text-gray-900 leading-snug" style="font-size:.88rem;"></div>
+            <div id="res-sub"  class="text-gray-400 text-xs mt-1 italic font-medium"></div>
           </div>
         </div>
-
         <!-- Score bar -->
-        <div class="rounded-xl p-3" style="background:#f5f3ff;">
-          <div class="flex rounded-full overflow-hidden mb-2" style="height:7px;">
+        <div class="rounded-xl p-3 mt-auto" style="background:#f5f3ff;">
+          <div class="flex rounded-full overflow-hidden mb-2" style="height:6px;">
             <div style="flex:13;background:#6ee7b7;"></div>
             <div style="flex:13;background:#fde68a;"></div>
             <div style="flex:14;background:#fca5a5;"></div>
           </div>
-          <div class="relative mb-1" style="height:13px;">
-            <div id="score-ptr" class="absolute rounded-full border-2 border-white" style="width:13px;height:13px;background:#7c3aed;top:0;left:0;margin-left:-6.5px;box-shadow:0 2px 6px rgba(124,58,237,.4);"></div>
+          <div class="relative mb-1" style="height:12px;">
+            <div id="score-ptr" class="absolute rounded-full border-2 border-white" style="width:12px;height:12px;background:#7c3aed;top:0;left:0;margin-left:-6px;box-shadow:0 2px 6px rgba(124,58,237,.4);"></div>
           </div>
-          <div class="flex justify-between text-gray-400 font-semibold" style="font-size:.58rem;">
+          <div class="flex justify-between text-gray-400 font-semibold" style="font-size:.56rem;">
             <span>0 ✨</span><span>14 ⚠️</span><span>27 🚨</span><span>40</span>
           </div>
-          <p class="text-center text-gray-400 mt-2" style="font-size:.58rem;">ℹ️ 4 dari 10 soal mengukur hal positif — jawaban "Sering" di sana = stres rendah</p>
         </div>
       </div>
-    </div>
-
-    <!-- ② Meme | Kondisi — 2 col on md+ -->
-    <div class="grid md:grid-cols-2 gap-4 mb-4">
 
       <!-- Meme -->
-      <div class="anim-up d1">
-        <p class="font-bold text-gray-400 text-xs uppercase tracking-wider mb-2 ml-1">🎭 Meme level kamu</p>
-        <div id="meme-real" class="hidden" style="border-radius:16px;overflow:hidden;border:2px solid #e5e7eb;box-shadow:0 4px 16px rgba(0,0,0,.07);">
-          <img id="meme-img" src="" alt="Meme" style="width:100%;object-fit:cover;max-height:260px;display:block;"/>
+      <div class="flex flex-col anim-up d1">
+        <p class="font-bold text-gray-400 text-xs uppercase tracking-wider mb-2">🎭 Meme level kamu</p>
+        <div id="meme-real" class="hidden flex-1" style="border-radius:14px;overflow:hidden;border:2px solid #e5e7eb;">
+          <img id="meme-img" src="" alt="Meme" style="width:100%;height:100%;object-fit:cover;display:block;"/>
         </div>
-        <div id="meme-ph" class="meme-ph" style="min-height:200px;">
-          <div id="ph-emoji" style="font-size:3rem;"></div>
+        <div id="meme-ph" class="meme-ph flex-1">
+          <div id="ph-emoji" style="font-size:2.5rem;"></div>
           <div id="ph-top" class="font-black text-gray-700 text-sm uppercase tracking-wide leading-snug"></div>
-          <div id="ph-bot" class="font-medium text-gray-400 text-xs italic mt-1"></div>
-          <span class="pill" style="background:white;color:#7c3aed;border:1.5px solid #c4b5fd;font-size:.6rem;margin-top:6px;">📸 Isi foto di MEME_POOLS ↑</span>
+          <div id="ph-bot" class="text-gray-400 text-xs italic mt-1 font-medium"></div>
+          <span class="pill" style="background:white;color:#7c3aed;border:1.5px solid #c4b5fd;font-size:.58rem;margin-top:4px;">📸 Isi foto di MEME_POOLS ↑</span>
         </div>
       </div>
 
       <!-- Kondisi -->
-      <div class="card p-5 anim-up d2 flex flex-col justify-center">
+      <div class="card p-4 flex flex-col justify-center anim-up d2">
         <p class="font-bold text-gray-800 text-sm mb-2">📢 Kondisi kamu saat ini</p>
         <p id="res-desc" class="text-gray-500 text-sm leading-relaxed"></p>
       </div>
 
     </div>
 
-    <!-- ③ Saran Anti-Stres — 2-col grid -->
-    <div class="mb-5 anim-up d3">
-      <div class="flex items-baseline gap-2 mb-1">
-        <p class="font-black text-gray-800" style="font-size:1rem;">💊 Saran Anti-Stres Buat Kamu</p>
-      </div>
-      <p class="text-gray-400 text-xs italic mb-3">Dipilih berdasarkan area stres tertinggi dari jawabanmu ↓</p>
+    <!-- ② Saran Anti-Stres -->
+    <div class="mb-4 anim-up d3">
+      <p class="font-black text-gray-800 mb-1" style="font-size:.97rem;">💊 Saran Anti-Stres Buat Kamu</p>
+      <p class="text-gray-400 text-xs italic mb-3">Disesuaikan berdasarkan area stres tertinggi dari jawabanmu</p>
       <div id="advice-list" class="grid sm:grid-cols-2 gap-3"></div>
     </div>
 
-    <!-- ④ Attribution + Buttons -->
+    <!-- ③ Attribution + Buttons -->
     <div class="anim-up d4">
-      <div class="rounded-2xl p-4 text-center mb-4" style="background:#f5f3ff;border:1.5px solid #ddd6fe;">
-        <p class="text-purple-500 text-xs leading-relaxed">
-          📊 <strong>Perceived Stress Scale (PSS-10)</strong> — Cohen, S., Kamarck, T., &amp; Mermelstein, R. (1983)
-        </p>
+      <div class="rounded-xl p-3 text-center mb-4" style="background:#f5f3ff;border:1.5px solid #ddd6fe;">
+        <p class="text-purple-500" style="font-size:.7rem;">📊 <strong>Perceived Stress Scale (PSS-10)</strong> — Cohen, S., Kamarck, T., &amp; Mermelstein, R. (1983)</p>
       </div>
       <div class="flex gap-3 max-w-xs mx-auto">
         <button class="btn-ghost flex-1" onclick="retake()">🔄 Ulangi</button>
@@ -296,11 +274,9 @@
 
 </div><!-- #app -->
 <script>
-/* =========================================================
-   MEME_POOLS — isi URL foto di sini
-   Masing-masing range score punya 2 slot (bisa 1 atau 2 foto).
-   Foto dipilih random dari yang terisi. Sisakan '' jika belum ada.
-========================================================= */
+/* ================================================================
+   MEME_POOLS — isi URL foto di sini (maks 2 per range, dipilih random)
+================================================================ */
 const MEME_POOLS = [
   { min:0,  max:6,  label:'✨ Zen Mode',          images:['',''] },
   { min:7,  max:13, label:'😌 Chill Banget',       images:['',''] },
@@ -310,22 +286,21 @@ const MEME_POOLS = [
   { min:34, max:40, label:'💀 System Overload',     images:['',''] },
 ];
 
-/* =========================================================
+/* ================================================================
    PSS-10 QUESTIONS
-   Reverse-scored (index 3,4,6,7) = pertanyaan positif
-   → "Sering Banget" di sini = stres RENDAH
-========================================================= */
+   Reverse-scored (index 3,4,6,7) = soal positif
+================================================================ */
 const QUESTIONS = [
-  { text:'kamu merasa kesal karena ada sesuatu yang terjadi di luar dugaan?',                                                   reverse:false },
-  { text:'kamu merasa tidak mampu mengendalikan hal-hal penting dalam hidupmu?',                                                reverse:false },
-  { text:'kamu merasa gugup, gelisah, atau stres?',                                                                             reverse:false },
-  { text:'kamu merasa yakin dan percaya diri bisa menghadapi masalah-masalah pribadimu?',                     reverse:true  },
-  { text:'segala sesuatu berjalan sesuai harapanmu?',                                                         reverse:true  },
-  { text:'kamu merasa tidak sanggup menyelesaikan semua hal yang harus kamu lakukan?',                                         reverse:false },
-  { text:'kamu mampu mengendalikan emosi dan tetap tenang saat ada hal yang mengganggu?',                     reverse:true  },
-  { text:'kamu merasa bisa menguasai keadaan di sekitarmu?',                                                  reverse:true  },
-  { text:'kamu merasa marah atau kesal karena sesuatu terjadi di luar kendalimu?',                                             reverse:false },
-  { text:'kamu merasa kesulitan-kesulitan yang ada sudah menumpuk terlalu banyak hingga terasa tidak bisa diatasi?',           reverse:false },
+  { text:'kamu merasa kesal karena ada sesuatu yang terjadi di luar dugaan?',                                                     reverse:false },
+  { text:'kamu merasa tidak mampu mengendalikan hal-hal penting dalam hidupmu?',                                                  reverse:false },
+  { text:'kamu merasa gugup, gelisah, atau stres?',                                                                               reverse:false },
+  { text:'kamu merasa yakin dan percaya diri bisa menghadapi masalah-masalah pribadimu?',                         reverse:true  },
+  { text:'segala sesuatu berjalan sesuai harapanmu?',                                                             reverse:true  },
+  { text:'kamu merasa tidak sanggup menyelesaikan semua hal yang harus kamu lakukan?',                                            reverse:false },
+  { text:'kamu mampu mengendalikan emosi dan tetap tenang saat ada hal yang mengganggu?',                         reverse:true  },
+  { text:'kamu merasa bisa menguasai keadaan di sekitarmu?',                                                      reverse:true  },
+  { text:'kamu merasa marah atau kesal karena sesuatu terjadi di luar kendalimu?',                                                reverse:false },
+  { text:'kamu merasa kesulitan-kesulitan yang ada sudah menumpuk terlalu banyak hingga terasa tidak bisa diatasi?',              reverse:false },
 ];
 
 const LIKERT = [
@@ -336,9 +311,9 @@ const LIKERT = [
   { val:4, emoji:'😰', label:'Sering Banget' },
 ];
 
-/* =========================================================
-   DOMAIN MAPPING — pertanyaan → domain stres
-========================================================= */
+/* ================================================================
+   DOMAIN MAPPING
+================================================================ */
 const Q_DOMAINS = [
   ['anxiety','unexpected'],
   ['control','mastery'],
@@ -352,181 +327,168 @@ const Q_DOMAINS = [
   ['cumulative','overwhelm'],
 ];
 
-/* =========================================================
-   ADVICE LIBRARY — 18 saran singkat berbasis sains
-   gist  : penjelasan singkat (1-2 kalimat)
-   example: contoh kegiatan konkret + kekinian
-========================================================= */
+/* ================================================================
+   ADVICE LIBRARY — 18 saran berbasis sains, bahasa natural
+================================================================ */
 const ADVICE_LIBRARY = [
-  /* ── BREATHING ── */
   {
-    id:'sigh', icon:'🌬️', title:'Physiological Sigh',
-    gist:'Double inhale lewat hidung → hembuskan pelan lewat mulut. Teknik Stanford (Balban et al., 2023) — lebih efektif dari meditasi untuk nurunin kortisol akut.',
-    example:'Coba 3x sebelum buka notif, email, atau chat yang anxiety-inducing',
+    id:'sigh', icon:'🌬️', title:'Pernapasan Physiological Sigh',
+    gist:'Tarik napas panjang lewat hidung, lalu langsung tarik napas pendek lagi lewat hidung, kemudian hembuskan pelan-pelan lewat mulut. Teknik ini dari penelitian Stanford University dan terbukti lebih efektif dari meditasi biasa untuk menurunkan stres secara instan.',
+    example:'Lakukan 3 kali sebelum membuka chat atau notifikasi yang kamu tahu bakal bikin overthinking',
     tags:['anxiety','emotional_reg','anger','unexpected'],
     tiers:['low','moderate','high'], priority:1,
   },
   {
-    id:'movement', icon:'🏃', title:'Gerak 10 Menit',
-    gist:'10 menit aktivitas fisik terbukti nurunin kortisol dan naikkin endorfin. Gak perlu gym, gak perlu outfit matching.',
-    example:'Jalan sambil dengerin Subjective Podcast, Satu Persen, atau playlist lo sendiri',
+    id:'movement', icon:'🏃', title:'Gerak Tubuh 10 Menit',
+    gist:'Aktivitas fisik selama 10 menit saja sudah cukup untuk menurunkan kadar kortisol dan meningkatkan endorfin. Tidak perlu pergi ke gym — jalan santai di sekitar rumah atau stretching ringan sudah efektif.',
+    example:'Jalan keliling blok sambil dengerin Subjective Podcast, Satu Persen, atau playlist favorit kamu',
     tags:['anxiety','anger','emotional_reg','cumulative'],
     tiers:['low','moderate','high'], priority:2,
   },
   {
     id:'muscle', icon:'💆', title:'Progressive Muscle Relaxation',
-    gist:'Tegangkan tiap kelompok otot 5 detik → lepaskan. Dari kaki ke wajah. Kita sering gak sadar badan udah super tegang.',
-    example:'10 menit sebelum tidur — ada guided version di Spotify dan YouTube gratis',
+    gist:'Tegangkan setiap kelompok otot selama 5 detik lalu lepaskan — mulai dari kaki hingga wajah. Kita sering tidak menyadari betapa tegangnya otot kita, dan latihan ini membantu melepas ketegangan yang menumpuk tanpa disadari.',
+    example:'Lakukan 10 menit sebelum tidur, tersedia versi panduan (guided) di Spotify dan YouTube secara gratis',
     tags:['anxiety','anger','emotional_reg'],
     tiers:['moderate','high'], priority:3,
   },
-
-  /* ── KOGNITIF ── */
   {
     id:'grounding', icon:'🌍', title:'5-4-3-2-1 Grounding',
-    gist:'5 benda terlihat → 4 bisa disentuh → 3 suara → 2 bau → 1 rasa. Tarik otak dari "mode panik" ke present dalam 2 menit.',
-    example:'Pas di angkot/kereta yang sesak atau meeting yang bikin overwhelmed',
+    gist:'Sebutkan 5 hal yang kamu lihat, 4 yang bisa disentuh, 3 suara yang didengar, 2 bau, dan 1 rasa. Teknik ini menarik perhatian otak kembali ke momen sekarang dan efektif menghentikan spiral pikiran yang berputar-putar.',
+    example:'Gunakan ini saat lagi di angkot, kereta, atau meeting yang terasa tidak ada ujungnya',
     tags:['anxiety','unexpected','anger','overwhelm'],
     tiers:['moderate','high'], priority:2,
   },
   {
     id:'circle', icon:'🎯', title:'Lingkaran Kontrol',
-    gist:'Bagi dua kolom: "Bisa gue kontrol" vs "Gak bisa." Fokus energi hanya ke kolom pertama. Ala Marcus Aurelius versi Gen Z.',
-    example:'Tulis di Notes HP saat kepala penuh mikirin "what ifs" dan worst case scenario',
+    gist:'Bagi selembar kertas menjadi dua kolom: hal yang bisa kamu kontrol dan hal yang tidak bisa. Tulis semua kekhawatiranmu, lalu fokuskan energimu hanya pada kolom pertama. Ini cara konkret untuk berhenti membuang energi pada hal yang di luar kendali.',
+    example:'Tulis di Notes HP saat kepala penuh dengan skenario terburuk dan pertanyaan "what if"',
     tags:['control','mastery','anger','unexpected','cumulative'],
     tiers:['low','moderate','high'], priority:2,
   },
   {
-    id:'defusion', icon:'💭', title:'Pikiran ≠ Fakta',
-    gist:'"Gue pasti gagal" → "Gue lagi punya pikiran bahwa gue pasti gagal." Teknik ACT untuk gak terseret same pikiran negatif.',
-    example:'Tulis pikiran lo di kertas, terus sobek. Literally works secara psikologis.',
+    id:'defusion', icon:'💭', title:'Pikiran Bukan Fakta',
+    gist:'Saat pikiran negatif datang, coba ubah dari "Aku pasti gagal" menjadi "Aku sedang punya pikiran bahwa aku pasti gagal." Teknik ACT ini menciptakan jarak antara kamu dan pikiranmu, sehingga pikiran itu tidak bisa mengendalikan tindakanmu.',
+    example:'Tulis pikiran buruknya di kertas, lalu sobek kertasnya — cara ini terbukti efektif secara psikologis',
     tags:['anxiety','self_efficacy','optimism'],
     tiers:['moderate','high'], priority:3,
   },
   {
     id:'values', icon:'🧭', title:'Values Check',
-    gist:'Tulis 3 nilai terpenting kamu. Cek apakah aktivitas harianmu selaras. Stres kronis sering = hidup yang "gak on track."',
-    example:'Bikin Instagram Notes atau journal entry "This is what I stand for" — just for yourself',
+    gist:'Tuliskan 3 nilai yang paling penting dalam hidupmu, lalu periksa apakah aktivitas harianmu sudah selaras dengan nilai tersebut. Stres yang berkepanjangan sering muncul dari perasaan hidup yang tidak terarah.',
+    example:'Buat catatan pribadi di Instagram Notes atau jurnal tentang apa yang paling kamu perjuangkan dalam hidup',
     tags:['optimism','direction','self_efficacy','control'],
     tiers:['low','moderate','high'], priority:4,
   },
   {
     id:'future_self', icon:'🔮', title:'Surat dari Future Self',
-    gist:'Tulis surat dari dirimu 5 tahun mendatang ke dirimu sekarang. Evidence-based "hope intervention" yang dipakai di terapi kognitif.',
-    example:'Coba FutureMe.org — email dari masa depan yang nyata-nyata kamu tulis sendiri',
+    gist:'Tulis surat dari versi dirimu 5 tahun ke depan untuk dirimu sekarang. Ceritakan seberapa jauh kamu sudah berkembang. Ini adalah teknik "hope intervention" yang terbukti secara ilmiah membantu menurunkan distress saat ini.',
+    example:'Coba FutureMe.org — situs yang memungkinkan kamu mengirim email ke diri sendiri untuk dibuka 1–5 tahun lagi',
     tags:['optimism','self_efficacy','direction','cumulative'],
     tiers:['low','moderate','high'], priority:4,
   },
-
-  /* ── WORKLOAD ── */
   {
     id:'dump', icon:'📝', title:'Brain Dump',
-    gist:'Tuang semua yang ada di kepala ke kertas atau apps selama 5 menit — no filter, no judgment. Clear cache RAM otak lo.',
-    example:'Di Notion, Bear, Obsidian, atau Notes biasa — 5 menit sebelum tidur atau meeting besar',
+    gist:'Luangkan 5 menit untuk menulis semua yang ada di kepalamu ke kertas atau aplikasi catatan, tanpa filter dan tanpa harus rapi. Cara ini memindahkan beban pikiran dari otak ke media tulis — seperti membersihkan cache di HP yang mulai lemot.',
+    example:'Bisa di Notion, Bear, Obsidian, atau Notes biasa — coba 5 menit sebelum tidur atau sebelum meeting penting',
     tags:['workload','overwhelm','anxiety','cumulative'],
     tiers:['low','moderate','high'], priority:2,
   },
   {
     id:'one', icon:'🧩', title:'Satu Langkah Terkecil',
-    gist:'Pilih satu tugas TERKECIL yang bisa diselesaikan sekarang. Otak butuh quick win untuk restart dari state overwhelmed.',
-    example:'Balas 1 chat, buka 1 dokumen, beli 1 keperluan — satu itu cukup buat mulai',
+    gist:'Ketika semua terasa berat, pilih satu tugas paling kecil yang bisa kamu selesaikan sekarang — sekecil apapun. Otak yang sedang kewalahan membutuhkan satu pencapaian kecil dulu untuk bisa kembali bergerak.',
+    example:'Balas satu chat yang tertunda, buka satu dokumen yang sudah lama dihindari, atau persiapkan satu hal untuk besok',
     tags:['workload','overwhelm','self_efficacy','cumulative'],
     tiers:['moderate','high'], priority:1,
   },
   {
-    id:'two_min', icon:'⚡', title:'2-Menit Rule',
-    gist:'Kalau task bisa selesai dalam 2 menit — lakukan SEKARANG. Dari GTD David Allen, mencegah tumpukan tugas kecil jadi anxiety.',
-    example:'Balas chat yang kebaca lama, close tab yang guilt-tripping lo, cicil to-do list',
+    id:'two_min', icon:'⚡', title:'Aturan 2 Menit',
+    gist:'Kalau sebuah tugas bisa diselesaikan dalam 2 menit, lakukan sekarang juga — jangan tunda. Metode dari GTD David Allen ini efektif mencegah tumpukan tugas-tugas kecil yang secara diam-diam menjadi sumber kecemasan.',
+    example:'Balas chat yang sudah terbaca lama, tutup tab browser yang bikin guilty, atau cicil to-do list satu per satu',
     tags:['workload','overwhelm','self_efficacy'],
     tiers:['low','moderate','high'], priority:3,
   },
   {
-    id:'break', icon:'⏸️', title:'Micro-break 90 Menit',
-    gist:'Otak punya siklus ultradian ~90 menit. Ambil 2 menit untuk berdiri dan lihat jarak jauh — ini sains, bukan males.',
-    example:'Set timer Pomodoro, terus lihat jendela, langit, atau tanaman — bukan scroll IG',
+    id:'break', icon:'⏸️', title:'Jeda Singkat Tiap 90 Menit',
+    gist:'Otak manusia memiliki siklus kerja alami sekitar 90 menit. Setelah itu, ambil jeda 2 menit untuk berdiri dan melihat ke arah yang jauh. Ini bukan kemalasan — ini cara otak bekerja secara optimal.',
+    example:'Set timer Pomodoro, lalu lihat keluar jendela, memandang langit, atau menyiram tanaman — bukan scroll media sosial',
     tags:['workload','overwhelm','anxiety'],
     tiers:['low','moderate','high'], priority:4,
   },
-
-  /* ── SOSIAL & EMOSI ── */
   {
-    id:'reach_out', icon:'💬', title:'Reach Out ke Seseorang',
-    gist:'Chat atau telpon satu orang yang kamu percaya. Manusia butuh ko-regulasi emosi — isolasi saat stres justru memperpanjang.',
-    example:'"Bisa ngobrol bentar gak? Butuh denger suara orang yang gak bikin tambah stres" 😄',
+    id:'reach_out', icon:'💬', title:'Hubungi Seseorang yang Kamu Percaya',
+    gist:'Kirim pesan atau telepon satu orang yang kamu percaya hari ini. Secara biologis, manusia membutuhkan koneksi sosial untuk mengatur emosi. Mengisolasi diri justru memperpanjang dan memperparah kondisi.',
+    example:'"Bisa ngobrol sebentar? Butuh dengerin suara orang yang tidak bikin tambah stres" 😄',
     tags:['cumulative','control','optimism','self_efficacy'],
     tiers:['moderate','high'], priority:1,
   },
   {
-    id:'stop', icon:'🛑', title:'Teknik STOP',
-    gist:'Stop → Tarik napas → Observe perasaan dari jarak aman → Proceed lebih sadar. Dari DBT untuk jeda 90 detik sebelum bereaksi.',
-    example:'Pas mau reply chat sengit, pas lagi macet, atau pas mau ngomel tapi gak perlu',
+    id:'stop', icon:'🛑', title:'Teknik STOP Sebelum Bereaksi',
+    gist:'Stop (berhenti sejenak) → Tarik napas dalam → Observe (amati perasaanmu dari jarak aman) → Proceed (lanjutkan lebih sadar). Teknik dari terapi DBT ini memberikan jeda 90 detik sebelum bereaksi secara impulsif.',
+    example:'Gunakan ini saat mau membalas pesan yang menyulut emosi, atau saat lagi terjebak kemacetan panjang',
     tags:['anger','emotional_reg','unexpected'],
     tiers:['moderate','high'], priority:2,
   },
   {
-    id:'gratitude', icon:'🙏', title:'What Went Right',
-    gist:'3 hal spesifik yang berjalan baik hari ini — sekecil apapun. Melawan negativity bias otak yang 3x lebih fokus ke hal buruk.',
-    example:'Voice note ke diri sendiri sebelum tidur, atau postingan privat di Close Friends',
+    id:'gratitude', icon:'🙏', title:'Catat 3 Hal yang Berjalan Baik',
+    gist:'Setiap malam, tuliskan 3 hal spesifik yang berjalan baik hari ini — sekecil apapun. Otak manusia secara alami 3 kali lebih fokus pada hal negatif, dan latihan ini secara aktif melatih ulang pola pikir itu.',
+    example:'Voice note untuk diri sendiri sebelum tidur, atau buat postingan privat khusus di Instagram Close Friends',
     tags:['optimism','self_efficacy','cumulative'],
     tiers:['low','moderate','high'], priority:4,
   },
-
-  /* ── LIFESTYLE ── */
   {
-    id:'detox', icon:'📵', title:'Digital Detox Malam',
-    gist:'HP jauh 1 jam sebelum tidur. Blue light + doomscrolling = kortisol naik → tidur buruk → stres makin besar esoknya.',
-    example:'Ganti dengan baca buku fisik, sketching, journaling, atau literally tidur lebih awal',
+    id:'detox', icon:'📵', title:'Jauhkan HP 1 Jam Sebelum Tidur',
+    gist:'Cahaya biru layar dan kebiasaan doomscrolling membuat kadar kortisol tetap tinggi menjelang tidur, yang menyebabkan kualitas tidur buruk dan stres yang lebih besar keesokan harinya. Satu jam bebas layar sebelum tidur bisa membuat perbedaan besar.',
+    example:'Ganti dengan membaca buku fisik, journaling, sketching, atau sekadar berbaring lebih awal',
     tags:['anxiety','workload','emotional_reg','cumulative'],
     tiers:['low','moderate','high'], priority:4,
   },
   {
-    id:'sleep', icon:'😴', title:'Sleep Hygiene',
-    gist:'Kurang tidur 1 jam naikan reaktivitas emosi otak hingga 60%. Tidur & bangun jam yang sama tiap hari itu cheat code.',
-    example:'Coba app Calm, Endel, atau cari "brown noise sleep" di YouTube untuk wind-down',
+    id:'sleep', icon:'😴', title:'Jaga Kualitas Tidur',
+    gist:'Kurang tidur bahkan hanya 1 jam saja meningkatkan reaktivitas emosi otak hingga 60%, yang membuat kamu jauh lebih mudah stres dan marah. Tidur dan bangun di jam yang sama setiap hari adalah kebiasaan paling efektif.',
+    example:'Coba aplikasi Calm, Endel, atau cari "brown noise for sleep" di YouTube untuk membantu ritual sebelum tidur',
     tags:['anxiety','anger','emotional_reg','workload'],
     tiers:['moderate','high'], priority:3,
   },
-
-  /* ── PROFESIONAL ── */
   {
-    id:'pro', icon:'🆘', title:'Cari Bantuan Profesional',
-    gist:'Psikolog itu kayak dokter — wajar dan perlu. Ini bukan lemah, ini tanda kamu cukup self-aware untuk tahu batas diri.',
-    example:'Into The Light 119 ext 8 · Yayasan Pulih (021) 788-42580 · Halodoc · SehatQ · Riliv',
+    id:'pro', icon:'🆘', title:'Konsultasi ke Psikolog atau Konselor',
+    gist:'Pergi ke psikolog itu wajar, sama seperti pergi ke dokter saat sakit fisik. Ini bukan tanda kelemahan — justru ini tanda kamu cukup self-aware untuk tahu kapan kamu butuh bantuan lebih dari sekadar tips.',
+    example:'Into The Light Indonesia: 119 ext 8 · Yayasan Pulih: (021) 788-42580 · Halodoc · SehatQ · Riliv',
     tags:['cumulative','control','anxiety','self_efficacy','optimism'],
     tiers:['high'], priority:0,
   },
 ];
 
-/* =========================================================
+/* ================================================================
    TIERS
-========================================================= */
+================================================================ */
 const TIERS = [
   {
     key:'low', min:0, max:13,
     tier:'LOW STRESS', cat:'Vibe Check: PASSED ✨', emoji:'😎', ring:'ring-low',
-    desc:'Skor PSS-10-mu menunjukkan tingkat stres yang rendah. Kamu punya resiliensi yang cukup solid untuk mengelola tekanan sehari-hari.\n\nIni bukan berarti hidupmu tanpa masalah — tapi kamu cukup mampu meresponsnya. Tetap jaga keseimbangan yang sudah kamu bangun!',
-    phEmoji:'😎🎵', phTop:'POV: YOU ACTUALLY HAVE YOUR LIFE TOGETHER', phBot:'"Stress? I don\'t know her." — kamu, apparently',
+    desc:'Skor PSS-10-mu menunjukkan tingkat stres yang rendah. Kamu punya resiliensi yang cukup solid untuk menghadapi tekanan sehari-hari.\n\nIni bukan berarti hidupmu tanpa masalah — tapi kamu cukup mampu meresponsnya dengan baik. Tetap jaga keseimbangan yang sudah kamu bangun!',
+    phEmoji:'😎🎵', phTop:'POV: YOU HAVE YOUR LIFE TOGETHER', phBot:'"Stress? I don\'t know her." — kamu, apparently',
   },
   {
     key:'moderate', min:14, max:26,
     tier:'MODERATE STRESS', cat:'Yellow Flag ⚠️', emoji:'😮‍💨', ring:'ring-mid',
-    desc:'Kamu masih bisa berfungsi normal — tapi ada tanda-tanda yang mulai perlu perhatian.\n\nMungkin kamu mulai ngerasain mood yang naik-turun, atau "aku baik-baik aja" sudah jadi jawaban autopilot. Ini waktunya self-care yang lebih intentional dan terencana.',
+    desc:'Kamu masih bisa berfungsi normal — tapi ada tanda-tanda yang mulai perlu diperhatikan.\n\nMungkin kamu mulai ngerasain mood yang naik-turun, atau "aku baik-baik aja" sudah jadi jawaban otomatis padahal belum tentu. Ini waktunya self-care yang lebih intentional.',
     phEmoji:'🔥🐶🔥', phTop:'"THIS IS FINE."', phBot:'(padahal semuanya lagi terbakar di sekitar kamu)',
   },
   {
     key:'high', min:27, max:40,
     tier:'HIGH STRESS', cat:'System Overload 🚨', emoji:'😭', ring:'ring-high',
-    desc:'Kita perlu ngobrol serius — tapi dengan penuh kasih sayang ya 💙\n\nSkor ini menunjukkan stres yang tinggi. Kamu mungkin sudah lama ngerasain susah tidur, mudah marah, sulit konsentrasi, atau lelah tanpa alasan jelas. Ini bukan tanda kelemahan — ini tanda kamu sudah terlalu lama kerja keras tanpa cukup recovery.',
-    phEmoji:'💀😭', phTop:'BRAIN.EXE HAS STOPPED WORKING', phBot:'404: Energy Not Found · Please restart and recover',
+    desc:'Kita perlu ngobrol serius — tapi dengan penuh kasih sayang ya 💙\n\nSkor ini menunjukkan stres yang tinggi. Kamu mungkin sudah lama merasakan susah tidur, mudah marah, sulit konsentrasi, atau kelelahan tanpa alasan yang jelas. Ini bukan tanda kelemahan — ini tanda kamu sudah terlalu lama kerja keras tanpa cukup recovery.',
+    phEmoji:'💀😭', phTop:'BRAIN.EXE HAS STOPPED WORKING', phBot:'404: Energy Not Found · Please restart',
   },
 ];
 
-/* =========================================================
+/* ================================================================
    CORE LOGIC
-========================================================= */
-const REVERSE = new Set([3, 4, 6, 7]);
-const calcScore = ans => ans.reduce((s, r, i) => s + (REVERSE.has(i) ? 4 - r : r), 0);
-const getTier   = s   => TIERS.find(t => s >= t.min && s <= t.max) || TIERS[0];
+================================================================ */
+const REVERSE    = new Set([3, 4, 6, 7]);
+const calcScore  = ans => ans.reduce((s, r, i) => s + (REVERSE.has(i) ? 4 - r : r), 0);
+const getTier    = s   => TIERS.find(t => s >= t.min && s <= t.max) || TIERS[0];
 
 function pickMeme(score) {
   const pool = MEME_POOLS.find(p => score >= p.min && score <= p.max);
@@ -554,9 +516,9 @@ function selectAdvice(answers, tier) {
   return result;
 }
 
-/* =========================================================
-   SCREEN & QUIZ
-========================================================= */
+/* ================================================================
+   SCREENS & QUIZ
+================================================================ */
 let ST = { cur:0, answers:[], sel:null };
 
 function go(id) {
@@ -564,8 +526,7 @@ function go(id) {
   const el = document.getElementById(id);
   el.classList.add('active');
   el.scrollTop = 0;
-  el.style.animation = 'none';
-  void el.offsetWidth;
+  el.style.animation = 'none'; void el.offsetWidth;
   el.style.animation = 'slideInR .4s cubic-bezier(.25,.46,.45,.94) both';
 }
 
@@ -585,15 +546,6 @@ function renderQ(i) {
   document.getElementById('q-prog').style.width = `${pct}%`;
   document.getElementById('q-badge').textContent = i + 1;
 
-  // Positive badge
-  const posEl = document.getElementById('q-positive');
-  if (q.reverse) {
-    posEl.style.display = 'flex';
-    posEl.classList.remove('hidden');
-  } else {
-    posEl.style.display = 'none';
-  }
-
   const card = document.getElementById('q-card');
   card.style.animation = 'none'; void card.offsetWidth;
   card.style.animation = 'slideInQ .3s ease-out both';
@@ -604,7 +556,7 @@ function renderQ(i) {
   LIKERT.forEach(o => {
     const btn = document.createElement('button');
     btn.className = 'ans-opt';
-    btn.innerHTML = `<div class="ans-dot">${o.val}</div><span style="font-size:1.2rem;">${o.emoji}</span><span class="font-semibold text-gray-700" style="font-size:.88rem;">${o.label}</span>`;
+    btn.innerHTML = `<div class="ans-dot">${o.val}</div><span style="font-size:1.15rem;">${o.emoji}</span><span class="font-semibold text-gray-700" style="font-size:.87rem;">${o.label}</span>`;
     btn.onclick = () => pick(o.val, btn);
     opts.appendChild(btn);
   });
@@ -616,9 +568,9 @@ function pick(val, btn) {
   document.querySelectorAll('.ans-opt').forEach(b => b.classList.remove('chosen'));
   btn.classList.add('chosen');
   ST.sel = val;
-  const nextBtn = document.getElementById('btn-next');
-  nextBtn.classList.remove('hidden');
-  nextBtn.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  const next = document.getElementById('btn-next');
+  next.classList.remove('hidden');
+  next.scrollIntoView({ behavior:'smooth', block:'nearest' });
 }
 
 function nextQ() {
@@ -629,16 +581,15 @@ function nextQ() {
   else renderQ(ST.cur);
 }
 
-/* =========================================================
+/* ================================================================
    RESULT
-========================================================= */
+================================================================ */
 function showResult() {
   const total = calcScore(ST.answers);
   const tier  = getTier(total);
 
-  // Score card
-  document.getElementById('res-ring').className  = `anim-pop flex-shrink-0 ${tier.ring}`;
-  document.getElementById('res-ring').style.cssText = 'width:110px;height:110px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;';
+  document.getElementById('res-ring').className = `anim-pop flex-shrink-0 ${tier.ring}`;
+  document.getElementById('res-ring').style.cssText = 'width:90px;height:90px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;';
   document.getElementById('res-score').textContent = total;
   document.getElementById('res-emoji').textContent = tier.emoji;
   document.getElementById('res-tier').textContent  = tier.tier;
@@ -648,7 +599,7 @@ function showResult() {
   document.getElementById('res-sub').textContent = pool ? pool.label : '';
 
   setTimeout(() => {
-    document.getElementById('score-ptr').style.left = `calc(${(total/40)*100}% - 6.5px)`;
+    document.getElementById('score-ptr').style.left = `calc(${(total / 40) * 100}% - 6px)`;
   }, 500);
 
   // Meme
@@ -668,24 +619,25 @@ function showResult() {
   // Description
   document.getElementById('res-desc').innerHTML = tier.desc.replace(/\n/g, '<br><br>');
 
-  // Advice (compact cards)
+  // Advice cards
   const items = selectAdvice(ST.answers, tier);
   const listEl = document.getElementById('advice-list');
   listEl.innerHTML = '';
-  const delays = ['d2','d3','d4','d5'];
-  items.forEach((a, i) => {
+  ['d2','d3','d4','d5'].forEach((delay, i) => {
+    if (!items[i]) return;
+    const a = items[i];
     const d = document.createElement('div');
-    d.className = `card-sm p-4 anim-up ${delays[i]||'d5'}`;
+    d.className = `card-sm p-4 anim-up ${delay}`;
     d.innerHTML = `
-      <div class="flex items-start gap-2.5 mb-2">
-        <span style="font-size:1.35rem;flex-shrink:0;">${a.icon}</span>
-        <div>
+      <div class="flex items-start gap-2.5">
+        <span style="font-size:1.3rem;flex-shrink:0;">${a.icon}</span>
+        <div class="min-w-0">
           <p class="font-bold text-gray-800 leading-snug" style="font-size:.83rem;">${a.title}</p>
-          <p class="text-gray-500 leading-relaxed mt-1" style="font-size:.75rem;">${a.gist}</p>
+          <p class="text-gray-500 leading-relaxed mt-1" style="font-size:.76rem;">${a.gist}</p>
+          <div class="coba-box">
+            <p class="font-semibold" style="font-size:.73rem;color:#6d28d9;">👉 Coba: ${a.example}</p>
+          </div>
         </div>
-      </div>
-      <div class="example-box">
-        <p class="font-semibold" style="font-size:.73rem;color:#6d28d9;">👉 Coba: ${a.example}</p>
       </div>`;
     listEl.appendChild(d);
   });
@@ -693,24 +645,24 @@ function showResult() {
   go('s-result');
 }
 
-/* =========================================================
+/* ================================================================
    ACTIONS
-========================================================= */
+================================================================ */
 function retake() { startQuiz(); }
 
 function copyRes() {
   const total = calcScore(ST.answers);
   const tier  = getTier(total);
   const pool  = MEME_POOLS.find(p => total >= p.min && total <= p.max);
-  const badge = total<=13 ? '✨ Stres rendah — vibes check passed!'
-              : total<=26 ? '⚠️ Moderate stress — butuh lebih banyak self-care'
-                          : '🚨 High stress — please reach out for support';
+  const badge = total <= 13 ? '✨ Stres rendah — vibes check passed!'
+              : total <= 26 ? '⚠️ Moderate stress — waktunya lebih banyak self-care'
+                            : '🚨 High stress — please reach out for support';
   const txt =
 `🧘‍♂️ Stress Level Check: Gen Z Edition
 Based on PSS-10 (Cohen et al., 1983)
 
 📊 Skor: ${total}/40
-🏷️ ${tier.tier} — ${tier.cat}${pool ? `\n🎯 ${pool.label}` : ''}
+🏷️ ${tier.tier} — ${tier.cat}${pool ? '\n🎯 ' + pool.label : ''}
 ${badge}
 
 Cek level stresmu juga — gratis & science-based!`;
@@ -719,7 +671,7 @@ Cek level stresmu juga — gratis & science-based!`;
     navigator.clipboard.writeText(txt).then(() => alert('✅ Disalin! Paste ke story atau caption kamu 😄'));
     return;
   }
-  const ta = Object.assign(document.createElement('textarea'), { value:txt });
+  const ta = Object.assign(document.createElement('textarea'), { value: txt });
   Object.assign(ta.style, { position:'fixed', opacity:'0' });
   document.body.appendChild(ta); ta.select();
   try { document.execCommand('copy'); alert('✅ Disalin!'); } catch(e) {}
